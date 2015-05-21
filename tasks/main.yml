@@ -1,0 +1,10 @@
+---
+- name: Create Datacenter and Clusters
+  ignore_errors: yes
+  local_action:
+    module: dc_cluster
+    host: "{{ vcenter_ip }}"
+    login: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    datacenter: "{{datacenter}}"  
+    
