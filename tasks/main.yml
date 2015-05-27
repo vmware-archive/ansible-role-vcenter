@@ -6,5 +6,4 @@
     host: "{{ vcenter_ip }}"
     login: "{{ vcenter_user }}"
     password: "{{ vcenter_password }}"
-    datacenter: "{{datacenter}}"  
-    
+    datacenter: "{{ datacenter }}"
