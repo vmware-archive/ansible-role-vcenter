@@ -6,7 +6,7 @@
     - libffi-dev
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   tags: packages
-  
+
 - name: Install PyOpenSSL, ndg-httpsclient, and PyASN1
   pip: name=requests[security] state=present
 

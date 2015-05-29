@@ -1,7 +1,7 @@
 ---
 - name: Create a new portgroup
   local_action:
-    module: vPortgroup 
+    module: vPortgroup
     hostname: "{{ vctr_host }}"
     vs_port: "{{ vport }}"
     username: "{{ vuser }}"
