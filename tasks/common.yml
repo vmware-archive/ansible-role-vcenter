@@ -12,5 +12,3 @@
 
 - name: Get vmware.py
   get_url: url="https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py" dest="/usr/local/lib/python2.7/dist-packages/ansible/module_utils" mode=0644
-
-

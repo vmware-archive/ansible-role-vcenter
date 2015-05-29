@@ -1,0 +1,14 @@
+---
+- name: Create a new portgroup
+  local_action:
+    module: vPortgroup
+    hostname: "{{ vcenter_host }}"
+    vs_port: "{{ vcenter_port }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    vds_name: "{{ item.vds_name }}"
+    port_group_name: "{{ item.name }}"
+    port_binding: "{{ item.port_binding }}"
+    numPorts: "{{ item.ports }}"
+    state: "present"
+    with_items: vcenter_portgroups

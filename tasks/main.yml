@@ -3,7 +3,7 @@
   ignore_errors: yes
   local_action:
     module: dc_cluster
-    host: "{{ vcenter_ip }}"
+    host: "{{ vcenter_host}}"
     login: "{{ vcenter_user }}"
     password: "{{ vcenter_password }}"
     datacenter: "{{ datacenter }}"
