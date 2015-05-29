@@ -1,0 +1,13 @@
+---
+- name: Create a new portgroup
+  local_action:
+    module: vPortgroup 
+    hostname: "{{ vctr_host }}"
+    vs_port: "{{ vport }}"
+    username: "{{ vuser }}"
+    password: "{{ vpass }}"
+    dvs_name: "{{ dvs_name }}"
+    port_group_name: "{{ portgroup_name }}"
+    port_binding: "{{ port_binding }}"
+    numPorts: "{{ num_ports }}"
+    state: "present"

@@ -1,0 +1,13 @@
+---
+####
+vctr_host: 192.168.76.10
+vuser: 'administrator@vsphere.local'
+vpass: 'VMware1!'
+vport: '443'
+
+####
+dvs_name: 'testDVS'
+numUplinks: 4
+numPorts: 16
+networkIOControl: 'True'
+productVersion: '6.0.0'

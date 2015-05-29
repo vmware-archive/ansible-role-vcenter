@@ -1,0 +1,16 @@
+---
+- name: Install pre-req for pip security modules
+  apt: name={{ item }} state=absent
+  with_items:
+    - libssl-dev
+    - libffi-dev
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: packages
+  
+- name: Install PyOpenSSL, ndg-httpsclient, and PyASN1
+  pip: name=requests[security] state=present
+
+- name: Get vmware.py
+  get_url: url="https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py" dest="/usr/local/lib/python2.7/dist-packages/ansible/module_utils" mode=0644
+
+
