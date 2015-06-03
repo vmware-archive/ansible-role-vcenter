@@ -11,4 +11,4 @@
     port_binding: "{{ item.port_binding }}"
     numPorts: "{{ item.ports }}"
     state: "present"
-    with_items: vcenter_portgroups
+  with_items: vcenter_portgroups
