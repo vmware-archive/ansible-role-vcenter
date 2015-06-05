@@ -1,5 +1,5 @@
 ---
-- name: Create a new portgroup
+- name: Create a new virtual distributed switch 
   local_action:
     module: vds
     hostname: "{{ vcenter_host }}"
