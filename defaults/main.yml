@@ -1,25 +1,37 @@
 ---
-####
-vcenter_host: 192.168.76.10
-vcenter_port: '443'
-vcenter_user: 'administrator@vsphere.local'
-vcenter_password: 'VMware1!'
-
-datacenter: 'VIO-DC'
+datacenter:
+  name: "{{ datacenter_name }}"
+  clusters:
+  - name: "{{ vio_cluster_mgmt }}"
+    hosts:
+    - name: "{{ mgmt_esx_name }}"
+      ip: "{{ mgmt_esx_ip }}"
+      mac: "{{ mgmt_esx_mac }}"
+  - name: "{{ vio_cluster_edge }}"
+    hosts:
+    - name: "{{ edge_esx_name }}"
+      ip: "{{ edge_esx_ip }}"
+      mac: "{{ edge_esx_mac }}"
+  - name: "{{ vio_cluster_compute }}"
+    hosts:
+    - name: "{{ compute_esx_name }}"
+      ip: "{{ compute_esx_ip }}"
+      mac: "{{ compute_esx_mac }}"
 
 #### VDS settings
 # Sample VDS list:
 # vcenter_vdss:
 #   - { name: 'testVDS', uplinks: 4, ports: 16, nioc: 'True', productVersion: '6.0.0' }
 vcenter_vdss:
-    - { name: 'VIO-VDS', uplinks: 2, ports: 64, nioc: 'True', productVersion: '6.0.0' }
+    - { name: "{{ vds_name }}", uplinks: "{{ uplinks }}", ports: "{{ sw_ports }}" , nioc: 'True', productVersion: "{{ productVersion }}" }
 
 # Sample Portgroup list
 # vcenter_portgroups:
-#   - { vds_name: 'testVDS', name: 'test_portgroup', port_binding: 'static', ports: '8' }
+#   - { vds_name: 'testVDS', name: 'test_portgroup', port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
 vcenter_portgroups:
-    - { vds_name: 'VIO-VDS', name: 'VIO API Network', port_binding: 'static', ports: '8' }
-    - { vds_name: 'VIO-VDS', name: 'VIO External Network', port_binding: 'static', ports: '8' }
-    - { vds_name: 'VIO-VDS', name: 'VIO Management', port_binding: 'static', ports: '8' }
-    - { vds_name: 'VIO-VDS', name: 'VIO Storage', port_binding: 'static', ports: '8' }
-    - { vds_name: 'VIO-VDS', name: 'VIO vMotion', port_binding: 'static', ports: '8' }
+    - { vds_name: "{{ vds_name }}", name: "{{ api_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ ext_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ mgmt_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ store_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ vmotion_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
+ 

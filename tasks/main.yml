@@ -7,6 +7,19 @@
     login: "{{ vcenter_user }}"
     password: "{{ vcenter_password }}"
     datacenter: "{{ datacenter }}"
-#- include: common.yml
-- include: vds.yml
-- include: portgroup.yml
+    port: "{{ vcenter_port }}"
+
+- name: Create vCenter vDS
+  include: vds.yml
+  register: vds
+  
+- name: debug vds
+  debug: var=vds
+
+- name: Create Port Groups
+  include: portgroup.yml
+  register: pg
+  
+- name: debug pg
+  debug: var=pg
+

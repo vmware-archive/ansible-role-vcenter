@@ -11,4 +11,4 @@
   pip: name=requests[security] state=present
 
 - name: Get vmware.py
-  get_url: url="https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py" dest="/usr/local/lib/python2.7/dist-packages/ansible/module_utils" mode=0644
+  get_url: url="https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py" dest="/usr/local/lib/python2.7/dist-packages/ansible/modget_url: url="https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py" dest="/usr/local/lib/python2.7/dist-packages/ansible/module_utils" mode=0644ule_utils" mode=0644

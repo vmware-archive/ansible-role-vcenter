@@ -8,7 +8,7 @@
     password: "{{ vcenter_password }}"
     vds_name: "{{ item.name }}"
     numUplinks: "{{ item.uplinks }}"
-    numPorts: "{{ item.ports }} "
+    numPorts: "{{ item.ports }}"
     networkIOControl: "{{ item.nioc }}"
     productVersion: "{{ item.productVersion }}"
     state: "present"
