@@ -7,16 +7,32 @@ datacenter:
     - name: "{{ mgmt_esx_name }}"
       ip: "{{ mgmt_esx_ip }}"
       mac: "{{ mgmt_esx_mac }}"
+    - name: "{{ mgmt_esx_name_a }}"
+      ip: "{{ mgmt_esx_ip_a }}"
+      mac: "{{ mgmt_esx_mac_a }}"
+    - name: "{{ mgmt_esx_name_b }}"
+      ip: "{{ mgmt_esx_ip_b }}"
+      mac: "{{ mgmt_esx_mac_b }}"
   - name: "{{ vio_cluster_edge }}"
     hosts:
     - name: "{{ edge_esx_name }}"
       ip: "{{ edge_esx_ip }}"
       mac: "{{ edge_esx_mac }}"
+    - name: "{{ edge_esx_name_a }}"
+      ip: "{{ edge_esx_ip_a }}"
+      mac: "{{ edge_esx_mac_a }}"
   - name: "{{ vio_cluster_compute }}"
     hosts:
     - name: "{{ compute_esx_name }}"
       ip: "{{ compute_esx_ip }}"
       mac: "{{ compute_esx_mac }}"
+    - name: "{{ compute_esx_name_a }}"
+      ip: "{{ compute_esx_ip_a }}"
+      mac: "{{ compute_esx_mac_a }}"
+    - name: "{{ compute_esx_name_b }}"
+      ip: "{{ compute_esx_ip_b }}"
+      mac: "{{ compute_esx_mac_b }}"
+
 
 #### VDS settings
 # Sample VDS list:
