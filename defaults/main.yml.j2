@@ -4,24 +4,24 @@ datacenter:
   clusters:
   - name: "{{ vio_cluster_mgmt }}"
     hosts:
-{% for n in range(count([v for v in globals.keys() if 'mgmt_esx_ip_' in s])) %}
-    - name: "{{'{{'}} mgmt_esx_name_{{n}} {{'}}'}}"
-      ip: "{{'{{'}} mgmt_esx_ip_{{n}} {{'}}'}}"
-      mac: "{{'{{'}} mgmt_esx_mac_{{n}} {{'}}'}}"
+{% for host in mgmt_hosts %}
+    - name: "{{ host.name }}"
+      ip: "{{ host.ip }}"
+      mac: "{{ host.mac }}"
 {% endfor %}
   - name: "{{ vio_cluster_edge }}"
     hosts:
-{% for n in range(count([v for v in globals.keys() if 'edge_esx_ip_' in s])) %}
-    - name: "{{'{{'}} edge_esx_name_{{n}} {{'}}'}}"
-      ip: "{{'{{'}} edge_esx_ip_{{n}} {{'}}'}}"
-      mac: "{{'{{'}} edge_esx_mac_{{n}} {{'}}'}}"
+{% for host in edge_hosts %}
+    - name: "{{ host.name }}"
+      ip: "{{ host.ip }}"
+      mac: "{{ host.mac }}"
 {% endfor %}
   - name: "{{ vio_cluster_compute }}"
     hosts:
-{% for n in range(count([v for v in globals.keys() if 'compute_esx_ip_' in s])) %}
-    - name: "{{'{{'}} compute_esx_name_{{n}} {{'}}'}}"
-      ip: "{{'{{'}} compute_esx_ip_{{n}} {{'}}'}}"
-      mac: "{{'{{'}} compute_esx_mac_{{n}} {{'}}'}}"
+{% for host in compute_hosts %}
+    - name: "{{ host.name }}"
+      ip: "{{ host.ip }}"
+      mac: "{{ host.mac }}"
 {% endfor %}
 
 #### VDS settings
