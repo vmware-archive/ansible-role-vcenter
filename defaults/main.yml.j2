@@ -4,25 +4,25 @@ datacenter:
   clusters:
   - name: "{{ vio_cluster_mgmt }}"
     hosts:
-{% for host in mgmt_hosts %}
+{%- for host in mgmt_hosts %}
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
-{% endfor %}
+{%- endfor %}
   - name: "{{ vio_cluster_edge }}"
     hosts:
-{% for host in edge_hosts %}
+{%- for host in edge_hosts %}
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
-{% endfor %}
+{%- endfor %}
   - name: "{{ vio_cluster_compute }}"
     hosts:
-{% for host in compute_hosts %}
+{%- for host in compute_hosts %}
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
-{% endfor %}
+{%- endfor %}
 
 #### VDS settings
 # Sample VDS list:
