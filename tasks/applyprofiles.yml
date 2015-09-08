@@ -14,33 +14,20 @@
 #  limitations under the License.
 #
 ---
-- name: Create Datacenter and Clusters
-  include: dc_cluster.yml
-  tags:
-    - datacenter
-
-- name: Create VDS and Portgroups
-  include: vds_pgs.yml
-  tags:
-    - vds
-
-- name: Add Hosts to Clusters
-  include: addhosts.yml
-  tags:
-    - addhosts
-
-- name: Configure Hosts
-  include: confighosts.yml
-  tags:
-    - confighosts
-
-- name: Create Host Profiles
-  include: hostprofiles.yml
-  tags:
-    - hostprofile
-
 - name: Apply Host Profiles
-  include: applyprofiles.yml
-  tags:
-    - applyprofile
-
+  ignore_errors: no
+  local_action:
+    module: setup
+    host: "{{ vcenter_host }}"
+    login: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    port: "{{ vcenter_port }}"
+    datacenter: "{{ datacenter }}"
+    esxhost: "{{ esxhost }}"
+    singlehost: "{{ add_single_host }}"
+    create_dc_clusters: False
+    add_hosts: False
+    usehostname: False
+    config_hosts: False
+    hostprofiles: False
+    apply_hostprofiles: True

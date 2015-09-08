@@ -14,33 +14,10 @@
 #  limitations under the License.
 #
 ---
-- name: Create Datacenter and Clusters
-  include: dc_cluster.yml
-  tags:
-    - datacenter
+- name: Create vCenter vDS
+  include: vds.yml
+  register: vds
 
-- name: Create VDS and Portgroups
-  include: vds_pgs.yml
-  tags:
-    - vds
-
-- name: Add Hosts to Clusters
-  include: addhosts.yml
-  tags:
-    - addhosts
-
-- name: Configure Hosts
-  include: confighosts.yml
-  tags:
-    - confighosts
-
-- name: Create Host Profiles
-  include: hostprofiles.yml
-  tags:
-    - hostprofile
-
-- name: Apply Host Profiles
-  include: applyprofiles.yml
-  tags:
-    - applyprofile
-
+- name: Create Port Groups
+  include: portgroup.yml
+  register: pg

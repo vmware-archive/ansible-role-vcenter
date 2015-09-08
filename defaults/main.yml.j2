@@ -23,6 +23,8 @@ datacenter:
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
+      username: "{{ host.username }}"
+      password: "{{ host.password }}"
 {%- endfor %}
   - name: "{{ vio_cluster_edge }}"
     hosts:
@@ -30,6 +32,8 @@ datacenter:
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
+      username: "{{ host.username }}"
+      password: "{{ host.password }}"
 {%- endfor %}
   - name: "{{ vio_cluster_compute }}"
     hosts:
@@ -37,7 +41,38 @@ datacenter:
     - name: "{{ host.name }}"
       ip: "{{ host.ip }}"
       mac: "{{ host.mac }}"
+      username: "{{ host.username }}"
+      password: "{{ host.password }}"
 {%- endfor %}
+  vds:
+    name: "{{ vds_name }}"
+    portgroups:
+      api:
+      - name: "{{ api_grp }}"
+        servicetype:
+        cider:
+      management:
+      - name: "{{ mgmt_grp }}"
+        servicetype: 'management'
+        cider:
+      storage:
+      - name: "{{ store_grp }}"
+        servicetype:
+        cider: "{{ strg_cider }}"
+      vmotion:
+      - name: "{{ vmotion_grp }}"
+        servicetype: 'vmotion'
+        cider: "{{ vmo_cider }}"
+      external:
+      - name: "{{ ext_grp }}"
+        servicetype:
+        cider:
+
+esxhost:
+  name: "{{ host_ip_name }}"
+  user: "{{ host_username }}"
+  password: "{{ host_password }}"
+  cluster: "{{ addhost_cluster }}"
 
 #### VDS settings
 # Sample VDS list:
