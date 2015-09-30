@@ -18,6 +18,7 @@ datacenter:
   name: "{{ datacenter_name }}"
   clusters:
   - name: "{{ vio_cluster_mgmt }}"
+    vsan: "{{ mgmt_vsan }}"
     hosts:
 {%- for host in mgmt_hosts %}
     - name: "{{ host.name }}"
@@ -27,6 +28,7 @@ datacenter:
       password: "{{ host.password }}"
 {%- endfor %}
   - name: "{{ vio_cluster_edge }}"
+    vsan: "{{ edge_vsan }}"
     hosts:
 {%- for host in edge_hosts %}
     - name: "{{ host.name }}"
@@ -36,6 +38,7 @@ datacenter:
       password: "{{ host.password }}"
 {%- endfor %}
   - name: "{{ vio_cluster_compute }}"
+    vsan: "{{ compute_vsan }}"
     hosts:
 {%- for host in compute_hosts %}
     - name: "{{ host.name }}"
@@ -90,3 +93,6 @@ vcenter_portgroups:
     - { vds_name: "{{ vds_name }}", name: "{{ mgmt_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ mgmt_vlan }}" }
     - { vds_name: "{{ vds_name }}", name: "{{ store_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ store_vlan }}" }
     - { vds_name: "{{ vds_name }}", name: "{{ vmotion_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ vmotion_vlan }}" }
+{% if mgmt_vsan == '1' or edge_vsan == '1' or compute_vsan == '1' %}
+    - { vds_name: "{{ vds_name }}", name: "{{ vsan_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ vsan_vlan }}" }
+{% endif %}
