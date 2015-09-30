@@ -85,9 +85,8 @@ vcenter_vdss:
 # vcenter_portgroups:
 #   - { vds_name: 'testVDS', name: 'test_portgroup', port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
 vcenter_portgroups:
-    - { vds_name: "{{ vds_name }}", name: "{{ api_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ ext_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ mgmt_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ store_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ vmotion_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
- 
+    - { vds_name: "{{ vds_name }}", name: "{{ api_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ api_vlan }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ ext_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ ext_vlan }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ mgmt_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ mgmt_vlan }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ store_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ store_vlan }}" }
+    - { vds_name: "{{ vds_name }}", name: "{{ vmotion_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ vmotion_vlan }}" }

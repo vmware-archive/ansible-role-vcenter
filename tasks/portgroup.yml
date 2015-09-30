@@ -26,4 +26,5 @@
     port_binding: "{{ item.port_binding }}"
     numPorts: "{{ item.ports }}"
     state: "present"
+    vlan: "{{ item.vlan }}"
   with_items: vcenter_portgroups
