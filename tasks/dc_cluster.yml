@@ -14,6 +14,14 @@
 #  limitations under the License.
 #
 ---
+- name: Assign values if OOB vCenter action selected
+  set_fact:
+    vcenter_host: "{{ oob_vcenter_url }}"
+    vcenter_user: "{{ oob_vcenter_user_name }}"
+    vcenter_password: "{{ oob_vcenter_user_password }}"
+    vcenter_port: "{{ oob_vcenter_port }}"
+    datacenter: "{{ oob_vcenter_datacenter_name }}"
+
 - name: Create Datacenter and Clusters
   ignore_errors: no
   local_action:

@@ -14,10 +14,29 @@
 #  limitations under the License.
 #
 ---
-- name: Create Datacenter and Clusters
-  include: dc_cluster.yml
+- name: Assign values if OOB vCenter action selected
+  set_fact:
+    vcenter_type: oob
+    vcenter_action: datacenter
   tags:
-    - datacenter
+    - create_oob_datacenter_task
+
+- name: Assign values if IB vCenter action selected
+  set_fact:
+    vcenter_type: ib
+    vcenter_action: datacenter
+  tags:
+    - create_ib_datacenter_task
+
+- name: Create the actionable task
+  template: src=../templates/create_datacenter.yml.j2 dest={{ vcenter_task_directory }}/create_oob_datacenter.yml
+  tags:
+    - create_oob_datacenter_task
+
+- name: Create Datacenter
+  include: create_oob_datacenter.yml
+  tags:
+    - oob_datacenter
 
 - name: Create VDS and Portgroups
   include: vds_pgs.yml
