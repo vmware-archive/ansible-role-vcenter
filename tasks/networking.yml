@@ -88,14 +88,64 @@
     vs_port: "{{ oob_vcenter_port }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    datacenter_name: "{{ oob_vcenter['name'] }}"
-    vds_name: "{{ oob_vcenter['dvs']['name'] }}"
+    vds_name: "{{ oob_vcenter['dvs'][0]['name'] }}"
     port_group_name: "{{ item['name'] }}"
     port_binding: "{{ item['port_binding'] }}"
     port_allocation: "{{ item['port_allocation'] }}"
     numPorts: "{{ item['ports'] }}"
     vlan: "{{ item['vlan'] }}"
     state: "present"
-  with_items: "{{ oob_vcenter['dvs']['portgroups'] }}"
+  with_items: "{{ oob_vcenter['dvs'][0]['portgroups'] }}"
   tags:
     - create_oob_vcenter_portgroups
+
+- name: Create the IB vCenter portgroups
+  vcenter_portgroup:
+    hostname: "{{ ib_vcenter_url }}"
+    vs_port: "{{ ib_vcenter_port }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    vds_name: "{{ ib_vcenter['dvs'][0]['name'] }}"
+    port_group_name: "{{ item['name'] }}"
+    port_binding: "{{ item['port_binding'] }}"
+    port_allocation: "{{ item['port_allocation'] }}"
+    numPorts: "{{ item['ports'] }}"
+    vlan: "{{ item['vlan'] }}"
+    state: "present"
+  with_items: "{{ ib_vcenter['dvs'][0]['portgroups'] }}"
+  tags:
+    - create_ib_vcenter_portgroups
+
+- name: Destroy the OOB vCenter portgroups
+  vcenter_portgroup:
+    hostname: "{{ oob_vcenter_url }}"
+    vs_port: "{{ oob_vcenter_port }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    vds_name: "{{ oob_vcenter['dvs'][0]['name'] }}"
+    port_group_name: "{{ item['name'] }}"
+    port_binding: "{{ item['port_binding'] }}"
+    port_allocation: "{{ item['port_allocation'] }}"
+    numPorts: "{{ item['ports'] }}"
+    vlan: "{{ item['vlan'] }}"
+    state: "absent"
+  with_items: "{{ oob_vcenter['dvs'][0]['portgroups'] }}"
+  tags:
+    - destroy_oob_vcenter_portgroups
+
+- name: Destroy the IB vCenter portgroups
+  vcenter_portgroup:
+    hostname: "{{ ib_vcenter_url }}"
+    vs_port: "{{ ib_vcenter_port }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    vds_name: "{{ ib_vcenter['dvs'][0]['name'] }}"
+    port_group_name: "{{ item['name'] }}"
+    port_binding: "{{ item['port_binding'] }}"
+    port_allocation: "{{ item['port_allocation'] }}"
+    numPorts: "{{ item['ports'] }}"
+    vlan: "{{ item['vlan'] }}"
+    state: "absent"
+  with_items: "{{ ib_vcenter['dvs'][0]['portgroups'] }}"
+  tags:
+    - destroy_ib_vcenter_portgroups

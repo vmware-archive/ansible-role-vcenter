@@ -96,3 +96,38 @@ ib_vcenter:
       ports: "{{ ib_vcenter_net_vds_ports }}"
       nioc: "{{ ib_vcenter_net_vds_nioc }}"
       productVersion: "{{ ib_vcenter_net_vds_version }}"
+      portgroups:
+        # Management - DCUI
+        - name: "{{ ib_vcenter_net_mgmt_pg_name }}"
+          port_binding: "{{ ib_vcenter_net_mgmt_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_mgmt_pg_ports }}"
+          vlan: "{{ ib_vcenter_net_mgmt_pg_vlan_id }}"
+          port_allocation: "{{ ib_vcenter_net_mgmt_pg_port_allocation }}"
+        # vMotion
+        - name: "{{ ib_vcenter_net_vmotion_pg_name }}"
+          port_binding: "{{ ib_vcenter_net_vmotion_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vmotion_pg_ports }}"
+          vlan: "{{ ib_vcenter_net_vmotion_pg_vlan_id }}"
+          port_allocation: "{{ ib_vcenter_net_vmotion_pg_port_allocation }}"
+{% if (storage_scheme == 'NFS') or (storage_scheme == 'iSCSI') %}
+        # IP Storage
+        - name: "{{ ib_vcenter_net_storage_pg_name }}"
+          port_binding: "{{ ib_vcenter_net_storage_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_storage_pg_ports }}"
+          vlan: "{{ ib_vcenter_net_storage_pg_vlan_id }}"
+          port_allocation: "{{ ib_vcenter_net_storage_pg_port_allocation }}"
+{% endif %}
+{% if deploy_vio == '1' %}
+        # VIO API
+        - name: "{{ ib_vcenter_net_vio_api_pg_name }}"
+          port_binding: "{{ ib_vcenter_net_vio_api_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vio_api_pg_ports }}"
+          vlan: "{{ ib_vcenter_net_vio_api_pg_vlan_id }}"
+          port_allocation: "{{ ib_vcenter_net_vio_api_pg_port_allocation }}"
+        # VIO External
+        - name: "{{ ib_vcenter_net_vio_ext_pg_name }}"
+          port_binding: "{{ ib_vcenter_net_vio_ext_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vio_ext_pg_ports }}"
+          vlan: "{{ ib_vcenter_net_vio_ext_pg_vlan_id }}"
+          port_allocation: "{{ ib_vcenter_net_vio_ext_pg_port_allocation }}"
+{% endif %}
