@@ -149,3 +149,183 @@
   with_items: "{{ ib_vcenter['dvs'][0]['portgroups'] }}"
   tags:
     - destroy_ib_vcenter_portgroups
+
+- name: Add ESX hosts to OOB vCenter DVS
+  vcenter_config_host_vds_only:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    vds_name: "{{ oob_vcenter_net_vds_name }}"
+    management_portgroup: "{{ oob_vcenter_net_mgmt_pg_name }}"
+    vmnic: 'vmnic0'
+    state: 'present'
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - add_oob_esx_hosts_to_vds
+
+- name: Add ESX hosts to IB vCenter VDS
+  vcenter_config_host_vds_only:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    datacenter_name: "{{ ib_vcenter_datacenter_name }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    vds_name: "{{ ib_vcenter_net_vds_name }}"
+    management_portgroup: "{{ ib_vcenter_net_mgmt_pg_name }}"
+    vmnic: 'vmnic0'
+    state: 'present'
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - add_ib_esx_hosts_to_vds
+
+- name: Migrate OOB Management ESX Servers Management VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ oob_vcenter_net_mgmt_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.mgmt_ip }}"
+      vmk_subnet: "{{ item.1.mgmt_netmask }}"
+      vmk_service_type: "{{ item.1.mgmt_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_oob_vmks_to_vds
+
+- name: Migrate OOB Management ESX Servers IP Storage VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ oob_vcenter_net_storage_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.storage_ip }}"
+      vmk_subnet: "{{ item.1.storage_netmask }}"
+      vmk_service_type: "{{ item.1.storage_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_oob_vmks_to_vds
+
+- name: Migrate OOB Management ESX Servers vMotion VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ oob_vcenter_net_vmotion_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.vmotion_ip }}"
+      vmk_subnet: "{{ item.1.vmotion_netmask }}"
+      vmk_service_type: "{{ item.1.vmotion_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_oob_vmks_to_vds
+
+- name: What are the mgmt vars?
+  debug: msg="Name - {{ item.1.mgmt_ip }} vmk_ip - {{ item.1.mgmt_ip }} vmk_service_type - {{ item.1.mgmt_service_type }}"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds
+
+- name: What are the storage vars?
+  debug: msg="Name - {{ item.1.storage_ip }} vmk_ip - {{ item.1.storage_ip }} vmk_service_type - {{ item.1.storage_service_type }}"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds
+
+- name: What are the vmotion vars?
+  debug: msg="Name - {{ item.1.vmotion_ip }} vmk_ip - {{ item.1.vmotion_ip }} vmk_service_type - {{ item.1.vmotion_service_type }}"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds
+
+- name: Migrate IB Management ESX Servers Management VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ ib_vcenter_net_mgmt_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.mgmt_ip }}"
+      vmk_subnet: "{{ item.1.mgmt_netmask }}"
+      vmk_service_type: "{{ item.1.mgmt_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds
+
+- name: Migrate IB Management ESX Servers IP Storage VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ ib_vcenter_net_storage_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.storage_ip }}"
+      vmk_subnet: "{{ item.1.storage_netmask }}"
+      vmk_service_type: "{{ item.1.storage_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds
+
+- name: Migrate IB Management ESX Servers vMotion VMkernel Port to VDS
+  vcenter_addvmk:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    portgroup_name: "{{ ib_vcenter_net_vmotion_pg_name }}"
+    vmk_information:
+      static: False
+      vmk_ip: "{{ item.1.vmotion_ip }}"
+      vmk_subnet: "{{ item.1.vmotion_netmask }}"
+      vmk_service_type: "{{ item.1.vmotion_service_type }}"
+      vmk_mtu: "1500"
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - migrate_ib_vmks_to_vds

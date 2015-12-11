@@ -23,13 +23,26 @@ oob_vcenter:
       hosts:
 {% for host in oob_mgmt_hosts %}
         - name: "{{ host.name }}"
-          ip: "{{ host.ip }}"
           mac: "{{ host.mac }}"
           username: "{{ host.username }}"
           password: "{{ host.password }}"
+        # Mgmt/DCUI port
+          mgmt_ip: "{{ host.mgmt_ip }}"
+          mgmt_netmask: "{{ host.mgmt_netmask }}"
+          mgmt_service_type: "management"
+        # vMotion
+          vmotion_ip: "{{ host.vmotion_ip }}"
+          vmotion_netmask: "{{ host.vmotion_netmask }}"
+          vmotion_service_type: "vmotion"
+{% if storage_scheme == 'NFS' or storage_scheme == "iSCSI" %}
+        # Storage
+          storage_ip: "{{ host.storage_ip }}"
+          storage_netmask: "{{ host.storage_netmask }}"
+          storage_service_type: ""
+{% endif %}
 {% endfor %}
   dvs:
-    - name: "{{ oob_vcenter_net_mgmt_pg_name }}"
+    - name: "{{ oob_vcenter_net_vds_name }}"
       uplinks: "{{ oob_vcenter_net_vds_uplinks }}"
       ports: "{{ oob_vcenter_net_vds_ports }}"
       nioc: "{{ oob_vcenter_net_vds_nioc }}"
@@ -72,10 +85,23 @@ ib_vcenter:
         hosts:
 {% for host in ib_mgmt_hosts %}
           - name: "{{ host.name }}"
-            ip: "{{ host.ip }}"
             mac: "{{ host.mac }}"
             username: "{{ host.username }}"
             password: "{{ host.password }}"
+          # Mgmt/DCUI port
+            mgmt_ip: "{{ host.mgmt_ip }}"
+            mgmt_netmask: "{{ host.mgmt_netmask }}"
+            mgmt_service_type: "management"
+          # vMotion
+            vmotion_ip: "{{ host.vmotion_ip }}"
+            vmotion_netmask: "{{ host.vmotion_netmask }}"
+            vmotion_service_type: "vmotion"
+{% if storage_scheme == 'NFS' or storage_scheme == "iSCSI" %}
+          # Storage
+            storage_ip: "{{ host.storage_ip }}"
+            storage_netmask: "{{ host.storage_netmask }}"
+            storage_service_type: ""
+{% endif %}
 {% endfor %}
 {% if deploy_nsx == '1' %}
       - name: "{{ ib_vcenter_nsxedge_esx_cluster_name }}"
@@ -83,10 +109,23 @@ ib_vcenter:
         hosts:
 {% for host in edge_hosts %}
           - name: "{{ host.name }}"
-            ip: "{{ host.ip }}"
             mac: "{{ host.mac }}"
             username: "{{ host.username }}"
             password: "{{ host.password }}"
+          # Mgmt/DCUI port
+            mgmt_ip: "{{ host.mgmt_ip }}"
+            mgmt_netmask: "{{ host.mgmt_netmask }}"
+            mgmt_service_type: "management"
+          # vMotion
+            vmotion_ip: "{{ host.vmotion_ip }}"
+            vmotion_netmask: "{{ host.vmotion_netmask }}"
+            vmotion_service_type: "vmotion"
+{% if storage_scheme == 'NFS' or storage_scheme == "iSCSI" %}
+          # Storage
+            storage_ip: "{{ host.storage_ip }}"
+            storage_netmask: "{{ host.storage_netmask }}"
+            storage_service_type: ""
+{% endif %}
 {% endfor %}
 {% endif %}
       - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
@@ -94,13 +133,26 @@ ib_vcenter:
         hosts:
 {% for host in compute_hosts %}
           - name: "{{ host.name }}"
-            ip: "{{ host.ip }}"
             mac: "{{ host.mac }}"
             username: "{{ host.username }}"
             password: "{{ host.password }}"
+          # Mgmt/DCUI port
+            mgmt_ip: "{{ host.mgmt_ip }}"
+            mgmt_netmask: "{{ host.mgmt_netmask }}"
+            mgmt_service_type: "management"
+          # vMotion
+            vmotion_ip: "{{ host.vmotion_ip }}"
+            vmotion_netmask: "{{ host.vmotion_netmask }}"
+            vmotion_service_type: "vmotion"
+{% if storage_scheme == 'NFS' or storage_scheme == "iSCSI" %}
+          # Storage
+            storage_ip: "{{ host.storage_ip }}"
+            storage_netmask: "{{ host.storage_netmask }}"
+            storage_service_type: ""
+{% endif %}
 {% endfor %}
   dvs:
-    - name: "{{ ib_vcenter_net_mgmt_pg_name }}"
+    - name: "{{ ib_vcenter_net_vds_name }}"
       uplinks: "{{ ib_vcenter_net_vds_uplinks }}"
       ports: "{{ ib_vcenter_net_vds_ports }}"
       nioc: "{{ ib_vcenter_net_vds_nioc }}"
@@ -112,7 +164,7 @@ ib_vcenter:
           port_binding: "{{ ib_vcenter_net_mgmt_pg_port_binding }}"
           ports: "{{ ib_vcenter_net_mgmt_pg_ports }}"
           port_allocation: "{{ ib_vcenter_net_mgmt_pg_port_allocation }}"
-{% if storage_scheme == NFS or storage_scheme == iSCSI %}
+{% if storage_scheme == 'NFS' or storage_scheme == 'iSCSI' %}
         # IP Storage
         - name: "{{ ib_vcenter_net_storage_pg_name }}"
           vlan: "{{ ib_vcenter_net_storage_pg_vlan_id }}"

@@ -21,7 +21,7 @@
     login: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
-    datacenter_name: "{{ ib_vcenter['name'] }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: present
     ha:
@@ -52,7 +52,7 @@
     login: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
-    datacenter_name: "{{ oob_vcenter['name'] }}"
+    datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: present
     ha:
@@ -83,7 +83,7 @@
     login: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
-    datacenter_name: "{{ ib_vcenter['name'] }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: absent
     ha:
@@ -114,7 +114,7 @@
     login: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
-    datacenter_name: "{{ oob_vcenter['name'] }}"
+    datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: absent
     ha:
