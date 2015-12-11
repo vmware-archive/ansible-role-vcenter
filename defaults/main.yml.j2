@@ -16,7 +16,7 @@
 # ---> This template is used by the prepare-variable.py script <---
 ---
 oob_vcenter:
-  name: "{{ oob_vcenter_datacenter_name }}"
+  datacenter_name: "{{ oob_vcenter_datacenter_name }}"
   clusters:
     - name: "{{ oob_vcenter_mgmt_esx_cluster_name }}"
       vsan: False
@@ -47,7 +47,7 @@ oob_vcenter:
           ports: "{{ oob_vcenter_net_vmotion_pg_ports }}"
           vlan: "{{ oob_vcenter_net_vmotion_pg_vlan_id }}"
           port_allocation: "{{ oob_vcenter_net_vmotion_pg_port_allocation }}"
-{% if (storage_scheme == 'NFS') or (storage_scheme == 'iSCSI') %}
+{% if storage_scheme == 'NFS' or storage_scheme == 'iSCSI' %}
         # IP Storage
         - name: "{{ oob_vcenter_net_storage_pg_name }}"
           port_binding: "{{ oob_vcenter_net_storage_pg_port_binding }}"
@@ -55,40 +55,49 @@ oob_vcenter:
           vlan: "{{ oob_vcenter_net_storage_pg_vlan_id }}"
           port_allocation: "{{ oob_vcenter_net_storage_pg_port_allocation }}"
 {% endif %}
+{% if deploy_nsx == '1' or deploy_vra == '1' or deploy_vcenter == '1' or deploy_vrb == '1' or deploy_vrli == '1' or deploy_vrops == '1' %}
+        # VM Network
+        - name: "{{ ib_vcenter_net_vm_pg_name }}"
+          vlan: "{{ ib_vcenter_net_vm_pg_vlan_id }}"
+          port_binding: "{{ ib_vcenter_net_vm_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vm_pg_ports }}"
+          port_allocation: "{{ ib_vcenter_net_vm_pg_port_allocation }}"
+{% endif %}
+
 ib_vcenter:
-  name: "{{ ib_vcenter_datacenter_name }}"
+  datacenter_name: "{{ ib_vcenter_datacenter_name }}"
   clusters:
-    - name: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
-      vsan: False
-      hosts:
+      - name: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
+        vsan: False
+        hosts:
 {% for host in ib_mgmt_hosts %}
-        - name: "{{ host.name }}"
-          ip: "{{ host.ip }}"
-          mac: "{{ host.mac }}"
-          username: "{{ host.username }}"
-          password: "{{ host.password }}"
+          - name: "{{ host.name }}"
+            ip: "{{ host.ip }}"
+            mac: "{{ host.mac }}"
+            username: "{{ host.username }}"
+            password: "{{ host.password }}"
 {% endfor %}
 {% if deploy_nsx == '1' %}
-    - name: "{{ ib_vcenter_nsxedge_esx_cluster_name }}"
-      vsan: False
-      hosts:
+      - name: "{{ ib_vcenter_nsxedge_esx_cluster_name }}"
+        vsan: False
+        hosts:
 {% for host in edge_hosts %}
-        - name: "{{ host.name }}"
-          ip: "{{ host.ip }}"
-          mac: "{{ host.mac }}"
-          username: "{{ host.username }}"
-          password: "{{ host.password }}"
+          - name: "{{ host.name }}"
+            ip: "{{ host.ip }}"
+            mac: "{{ host.mac }}"
+            username: "{{ host.username }}"
+            password: "{{ host.password }}"
 {% endfor %}
 {% endif %}
-    - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
-      vsan: False
-      hosts:
+      - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
+        vsan: False
+        hosts:
 {% for host in compute_hosts %}
-        - name: "{{ host.name }}"
-          ip: "{{ host.ip }}"
-          mac: "{{ host.mac }}"
-          username: "{{ host.username }}"
-          password: "{{ host.password }}"
+          - name: "{{ host.name }}"
+            ip: "{{ host.ip }}"
+            mac: "{{ host.mac }}"
+            username: "{{ host.username }}"
+            password: "{{ host.password }}"
 {% endfor %}
   dvs:
     - name: "{{ ib_vcenter_net_mgmt_pg_name }}"
@@ -99,35 +108,43 @@ ib_vcenter:
       portgroups:
         # Management - DCUI
         - name: "{{ ib_vcenter_net_mgmt_pg_name }}"
+          vlan: "{{ ib_vcenter_net_mgmt_pg_vlan_id }}"
           port_binding: "{{ ib_vcenter_net_mgmt_pg_port_binding }}"
           ports: "{{ ib_vcenter_net_mgmt_pg_ports }}"
-          vlan: "{{ ib_vcenter_net_mgmt_pg_vlan_id }}"
           port_allocation: "{{ ib_vcenter_net_mgmt_pg_port_allocation }}"
-        # vMotion
-        - name: "{{ ib_vcenter_net_vmotion_pg_name }}"
-          port_binding: "{{ ib_vcenter_net_vmotion_pg_port_binding }}"
-          ports: "{{ ib_vcenter_net_vmotion_pg_ports }}"
-          vlan: "{{ ib_vcenter_net_vmotion_pg_vlan_id }}"
-          port_allocation: "{{ ib_vcenter_net_vmotion_pg_port_allocation }}"
-{% if (storage_scheme == 'NFS') or (storage_scheme == 'iSCSI') %}
+{% if storage_scheme == NFS or storage_scheme == iSCSI %}
         # IP Storage
         - name: "{{ ib_vcenter_net_storage_pg_name }}"
+          vlan: "{{ ib_vcenter_net_storage_pg_vlan_id }}"
           port_binding: "{{ ib_vcenter_net_storage_pg_port_binding }}"
           ports: "{{ ib_vcenter_net_storage_pg_ports }}"
-          vlan: "{{ ib_vcenter_net_storage_pg_vlan_id }}"
           port_allocation: "{{ ib_vcenter_net_storage_pg_port_allocation }}"
 {% endif %}
+        # vMotion
+        - name: "{{ ib_vcenter_net_vmotion_pg_name }}"
+          vlan: "{{ ib_vcenter_net_vmotion_pg_vlan_id }}"
+          port_binding: "{{ ib_vcenter_net_vmotion_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vmotion_pg_ports }}"
+          port_allocation: "{{ ib_vcenter_net_vmotion_pg_port_allocation }}"
 {% if deploy_vio == '1' %}
         # VIO API
         - name: "{{ ib_vcenter_net_vio_api_pg_name }}"
+          vlan: "{{ ib_vcenter_net_vio_api_pg_vlan_id }}"
           port_binding: "{{ ib_vcenter_net_vio_api_pg_port_binding }}"
           ports: "{{ ib_vcenter_net_vio_api_pg_ports }}"
-          vlan: "{{ ib_vcenter_net_vio_api_pg_vlan_id }}"
           port_allocation: "{{ ib_vcenter_net_vio_api_pg_port_allocation }}"
         # VIO External
         - name: "{{ ib_vcenter_net_vio_ext_pg_name }}"
+          vlan: "{{ ib_vcenter_net_vio_ext_pg_vlan_id }}"
           port_binding: "{{ ib_vcenter_net_vio_ext_pg_port_binding }}"
           ports: "{{ ib_vcenter_net_vio_ext_pg_ports }}"
-          vlan: "{{ ib_vcenter_net_vio_ext_pg_vlan_id }}"
           port_allocation: "{{ ib_vcenter_net_vio_ext_pg_port_allocation }}"
+{% endif %}
+{% if deploy_nsx == '1' or deploy_vra == '1' or deploy_vcenter == '1' or deploy_vrb == '1' or deploy_vrli == '1' or deploy_vrops == '1' %}
+        # VM Network
+        - name: "{{ ib_vcenter_net_vm_pg_name }}"
+          vlan: "{{ ib_vcenter_net_vm_pg_vlan_id }}"
+          port_binding: "{{ ib_vcenter_net_vm_pg_port_binding }}"
+          ports: "{{ ib_vcenter_net_vm_pg_ports }}"
+          port_allocation: "{{ ib_vcenter_net_vm_pg_port_allocation }}"
 {% endif %}

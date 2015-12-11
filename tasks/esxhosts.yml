@@ -1,0 +1,87 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+- name: Add ESX hosts to OOB cluster
+  vcenter_addhost:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
+    cluster_name: "{{ item.0.name }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    esxi_username: "{{ item.1.username }}"
+    esxi_password: "{{ item.1.password }}"
+    state: 'present'
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - add_esx_hosts_to_oob_esx_cluster
+
+- name: Add ESX hosts to IB clusters
+  vcenter_addhost:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
+    cluster_name: "{{ item.0.name }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    esxi_username: "{{ item.1.username }}"
+    esxi_password: "{{ item.1.password }}"
+    state: 'present'
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - add_esx_hosts_to_ib_esx_cluster
+
+- name: Remove ESX hosts from OOB cluster
+  vcenter_addhost:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
+    cluster_name: "{{ item.0.name }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    esxi_username: "{{ item.1.username }}"
+    esxi_password: "{{ item.1.password }}"
+    state: 'absent'
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - remove_esx_hosts_from_oob_esx_cluster
+
+- name: Remove ESX hosts from IB clusters
+  vcenter_addhost:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
+    cluster_name: "{{ item.0.name }}"
+    esxi_hostname: "{{ item.1.ip }}"
+    esxi_username: "{{ item.1.username }}"
+    esxi_password: "{{ item.1.password }}"
+    state: 'absent'
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - remove_esx_hosts_from_ib_esx_cluster

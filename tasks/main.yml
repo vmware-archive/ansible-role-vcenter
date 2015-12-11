@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 ---
-- include: prereqs.yml
 - include: datacenter.yml
 - include: esxclusters.yml
 - include: networking.yml
+- include: esxhosts.yml
