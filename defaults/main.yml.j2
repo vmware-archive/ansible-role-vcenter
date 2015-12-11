@@ -13,86 +13,86 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+# ---> This template is used by the prepare-variable.py script <---
 ---
-datacenter:
-  name: "{{ datacenter_name }}"
+oob_vcenter:
+  name: "{{ oob_vcenter_datacenter_name }}"
   clusters:
-  - name: "{{ vio_cluster_mgmt }}"
-    vsan: "{{ mgmt_vsan }}"
-    hosts:
-{%- for host in mgmt_hosts %}
-    - name: "{{ host.name }}"
-      ip: "{{ host.ip }}"
-      mac: "{{ host.mac }}"
-      username: "{{ host.username }}"
-      password: "{{ host.password }}"
-{%- endfor %}
-  - name: "{{ vio_cluster_edge }}"
-    vsan: "{{ edge_vsan }}"
-    hosts:
-{%- for host in edge_hosts %}
-    - name: "{{ host.name }}"
-      ip: "{{ host.ip }}"
-      mac: "{{ host.mac }}"
-      username: "{{ host.username }}"
-      password: "{{ host.password }}"
-{%- endfor %}
-  - name: "{{ vio_cluster_compute }}"
-    vsan: "{{ compute_vsan }}"
-    hosts:
-{%- for host in compute_hosts %}
-    - name: "{{ host.name }}"
-      ip: "{{ host.ip }}"
-      mac: "{{ host.mac }}"
-      username: "{{ host.username }}"
-      password: "{{ host.password }}"
-{%- endfor %}
-  vds:
-    name: "{{ vds_name }}"
-    portgroups:
-      api:
-      - name: "{{ api_grp }}"
-        servicetype:
-        cider:
-      management:
-      - name: "{{ mgmt_grp }}"
-        servicetype: 'management'
-        cider:
-      storage:
-      - name: "{{ store_grp }}"
-        servicetype:
-        cider: "{{ strg_cider }}"
-      vmotion:
-      - name: "{{ vmotion_grp }}"
-        servicetype: 'vmotion'
-        cider: "{{ vmo_cider }}"
-      external:
-      - name: "{{ ext_grp }}"
-        servicetype:
-        cider:
-
-esxhost:
-  name: "{{ host_ip_name }}"
-  user: "{{ host_username }}"
-  password: "{{ host_password }}"
-  cluster: "{{ addhost_cluster }}"
-
-#### VDS settings
-# Sample VDS list:
-# vcenter_vdss:
-#   - { name: 'testVDS', uplinks: 4, ports: 16, nioc: 'True', productVersion: '6.0.0' }
-vcenter_vdss:
-    - { name: "{{ vds_name }}", uplinks: "{{ uplinks }}", ports: "{{ sw_ports }}" , nioc: 'True', productVersion: "{{ productVersion }}" }
-
-# Sample Portgroup list
-# vcenter_portgroups:
-#   - { vds_name: 'testVDS', name: 'test_portgroup', port_binding: "{{ port_binding }}", ports: "{{ ports }}" }
-vcenter_portgroups:
-    - { vds_name: "{{ vds_name }}", name: "{{ api_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ api_vlan }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ ext_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ ext_vlan }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ mgmt_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ mgmt_vlan }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ store_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ store_vlan }}" }
-    - { vds_name: "{{ vds_name }}", name: "{{ vmotion_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ vmotion_vlan }}" }
-{% if mgmt_vsan == '1' or edge_vsan == '1' or compute_vsan == '1' %}
-    - { vds_name: "{{ vds_name }}", name: "{{ vsan_grp }}", port_binding: "{{ port_binding }}", ports: "{{ ports }}", vlan: "{{ vsan_vlan }}" }
+    - name: "{{ oob_vcenter_mgmt_esx_cluster_name }}"
+      vsan: False
+      hosts:
+{% for host in oob_mgmt_hosts %}
+        - name: "{{ host.name }}"
+          ip: "{{ host.ip }}"
+          mac: "{{ host.mac }}"
+          username: "{{ host.username }}"
+          password: "{{ host.password }}"
+{% endfor %}
+  dvs:
+    - name: "{{ oob_vcenter_net_mgmt_pg_name }}"
+      uplinks: "{{ oob_vcenter_net_vds_uplinks }}"
+      ports: "{{ oob_vcenter_net_vds_ports }}"
+      nioc: "{{ oob_vcenter_net_vds_nioc }}"
+      productVersion: "{{ oob_vcenter_net_vds_version }}"
+      portgroups:
+        # Management - DCUI
+        - name: "{{ oob_vcenter_net_mgmt_pg_name }}"
+          port_binding: "{{ oob_vcenter_net_mgmt_pg_port_binding }}"
+          ports: "{{ oob_vcenter_net_mgmt_pg_ports }}"
+          vlan: "{{ oob_vcenter_net_mgmt_pg_vlan_id }}"
+          port_allocation: "{{ oob_vcenter_net_mgmt_pg_port_allocation }}"
+        # vMotion
+        - name: "{{ oob_vcenter_net_vmotion_pg_name }}"
+          port_binding: "{{ oob_vcenter_net_vmotion_pg_port_binding }}"
+          ports: "{{ oob_vcenter_net_vmotion_pg_ports }}"
+          vlan: "{{ oob_vcenter_net_vmotion_pg_vlan_id }}"
+          port_allocation: "{{ oob_vcenter_net_vmotion_pg_port_allocation }}"
+{% if (storage_scheme == 'NFS') or (storage_scheme == 'iSCSI') %}
+        # IP Storage
+        - name: "{{ oob_vcenter_net_storage_pg_name }}"
+          port_binding: "{{ oob_vcenter_net_storage_pg_port_binding }}"
+          ports: "{{ oob_vcenter_net_storage_pg_ports }}"
+          vlan: "{{ oob_vcenter_net_storage_pg_vlan_id }}"
+          port_allocation: "{{ oob_vcenter_net_storage_pg_port_allocation }}"
 {% endif %}
+ib_vcenter:
+  name: "{{ ib_vcenter_datacenter_name }}"
+  clusters:
+    - name: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
+      vsan: False
+      hosts:
+{% for host in ib_mgmt_hosts %}
+        - name: "{{ host.name }}"
+          ip: "{{ host.ip }}"
+          mac: "{{ host.mac }}"
+          username: "{{ host.username }}"
+          password: "{{ host.password }}"
+{% endfor %}
+{% if deploy_nsx == '1' %}
+    - name: "{{ ib_vcenter_nsxedge_esx_cluster_name }}"
+      vsan: False
+      hosts:
+{% for host in edge_hosts %}
+        - name: "{{ host.name }}"
+          ip: "{{ host.ip }}"
+          mac: "{{ host.mac }}"
+          username: "{{ host.username }}"
+          password: "{{ host.password }}"
+{% endfor %}
+{% endif %}
+    - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
+      vsan: False
+      hosts:
+{% for host in compute_hosts %}
+        - name: "{{ host.name }}"
+          ip: "{{ host.ip }}"
+          mac: "{{ host.mac }}"
+          username: "{{ host.username }}"
+          password: "{{ host.password }}"
+{% endfor %}
+  dvs:
+    - name: "{{ ib_vcenter_net_mgmt_pg_name }}"
+      uplinks: "{{ ib_vcenter_net_vds_uplinks }}"
+      ports: "{{ ib_vcenter_net_vds_ports }}"
+      nioc: "{{ ib_vcenter_net_vds_nioc }}"
+      productVersion: "{{ ib_vcenter_net_vds_version }}"

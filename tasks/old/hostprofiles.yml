@@ -14,7 +14,20 @@
 #  limitations under the License.
 #
 ---
-- include: prereqs.yml
-- include: datacenter.yml
-- include: esxclusters.yml
-- include: networking.yml
+- name: Create Host Profiles
+  ignore_errors: no
+  local_action:
+    module: vcenter_setup
+    host: "{{ vcenter_host }}"
+    login: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    port: "{{ vcenter_port }}"
+    datacenter: "{{ datacenter }}"
+    esxhost: "{{ esxhost }}"
+    singlehost: "{{ add_single_host }}"
+    create_dc_clusters: False
+    add_hosts: False
+    usehostname: False
+    config_hosts: False
+    hostprofiles: True
+    apply_hostprofiles: False

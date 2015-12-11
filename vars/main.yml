@@ -14,6 +14,7 @@
 #  limitations under the License.
 #
 ---
-vcenter_task_directory: "/opt/supervio-ansible/roles/vcenter/tasks"
-esxhost: ""
-add_single_host: ""
+vcenter_role_directory: "/opt/chaperone-ansible/roles/vcenter"
+# pysphere is only used to delete the appliances
+pysphere_version: "0.1.7"
+pyvmomi_version: "5.5.0-2014.1.1"

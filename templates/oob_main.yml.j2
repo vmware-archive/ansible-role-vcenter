@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 ---
-- include: prereqs.yml
-- include: datacenter.yml
-- include: esxclusters.yml
-- include: networking.yml
+datacenter:
+  name: "{{ oob_vcenter_datacenter_name }}"
+  clusters:
+  - name: "{{ oob_vcenter_mgmt_esx_cluster }}"

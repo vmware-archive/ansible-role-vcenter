@@ -15,19 +15,11 @@
 #
 ---
 - name: Create Host Profiles
-  ignore_errors: no
-  local_action:
-    module: vcenter_setup
-    host: "{{ vcenter_host }}"
-    login: "{{ vcenter_user }}"
-    password: "{{ vcenter_password }}"
-    port: "{{ vcenter_port }}"
-    datacenter: "{{ datacenter }}"
-    esxhost: "{{ esxhost }}"
-    singlehost: "{{ add_single_host }}"
-    create_dc_clusters: False
-    add_hosts: False
-    usehostname: False
-    config_hosts: False
-    hostprofiles: True
-    apply_hostprofiles: False
+  include: hostprofiles.yml
+  tags:
+    - hostprofile
+
+- name: Apply Host Profiles
+  include: applyprofiles.yml
+  tags:
+    - applyprofile

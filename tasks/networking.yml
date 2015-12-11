@@ -1,0 +1,101 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+- name: Create the OOB vCenter Distributed vSwitch
+  vds:
+    hostname: "{{ oob_vcenter_url }}"
+    vs_port: "{{ oob_vcenter_port }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    datacenter_name: "{{ oob_vcenter['name'] }}"
+    vds_name: "{{ item['name'] }}"
+    numUplinks: "{{ item['uplinks'] }}"
+    numPorts: "{{ item['ports'] }}"
+    networkIOControl: "{{ item['nioc'] }}"
+    productVersion: "{{ item['productVersion'] }}"
+    state: "present"
+  with_items: "{{ oob_vcenter['dvs'] }}"
+  tags:
+    - create_oob_vcenter_dvs
+
+- name: Create the IB vCenter Distributed vSwitch
+  vds:
+    hostname: "{{ ib_vcenter_url }}"
+    vs_port: "{{ ib_vcenter_port }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter['name'] }}"
+    vds_name: "{{ item['name'] }}"
+    numUplinks: "{{ item['uplinks'] }}"
+    numPorts: "{{ item['ports'] }}"
+    networkIOControl: "{{ item['nioc'] }}"
+    productVersion: "{{ item['productVersion'] }}"
+    state: "present"
+  with_items: "{{ ib_vcenter['dvs'] }}"
+  tags:
+    - create_ib_vcenter_dvs
+
+- name: Destroy the OOB vCenter Distributed vSwitch
+  vds:
+    hostname: "{{ oob_vcenter_url }}"
+    vs_port: "{{ oob_vcenter_port }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    datacenter_name: "{{ oob_vcenter['name'] }}"
+    vds_name: "{{ item['name'] }}"
+    numUplinks: "{{ item['uplinks'] }}"
+    numPorts: "{{ item['ports'] }}"
+    networkIOControl: "{{ item['nioc'] }}"
+    productVersion: "{{ item['productVersion'] }}"
+    state: "absent"
+  with_items: "{{ oob_vcenter['dvs'] }}"
+  tags:
+    - destroy_oob_vcenter_dvs
+
+- name: Destroy the IB vCenter Distributed vSwitch
+  vds:
+    hostname: "{{ ib_vcenter_url }}"
+    vs_port: "{{ ib_vcenter_port }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter['name'] }}"
+    vds_name: "{{ item['name'] }}"
+    numUplinks: "{{ item['uplinks'] }}"
+    numPorts: "{{ item['ports'] }}"
+    networkIOControl: "{{ item['nioc'] }}"
+    productVersion: "{{ item['productVersion'] }}"
+    state: "absent"
+  with_items: "{{ ib_vcenter['dvs'] }}"
+  tags:
+    - destroy_ib_vcenter_dvs
+
+- name: Create the OOB vCenter portgroups
+  vcenter_portgroup:
+    hostname: "{{ oob_vcenter_url }}"
+    vs_port: "{{ oob_vcenter_port }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    datacenter_name: "{{ oob_vcenter['name'] }}"
+    vds_name: "{{ oob_vcenter['dvs']['name'] }}"
+    port_group_name: "{{ item['name'] }}"
+    port_binding: "{{ item['port_binding'] }}"
+    port_allocation: "{{ item['port_allocation'] }}"
+    numPorts: "{{ item['ports'] }}"
+    vlan: "{{ item['vlan'] }}"
+    state: "present"
+  with_items: "{{ oob_vcenter['dvs']['portgroups'] }}"
+  tags:
+    - create_oob_vcenter_portgroups

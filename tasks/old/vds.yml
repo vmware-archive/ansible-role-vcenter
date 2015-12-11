@@ -14,7 +14,17 @@
 #  limitations under the License.
 #
 ---
-- include: prereqs.yml
-- include: datacenter.yml
-- include: esxclusters.yml
-- include: networking.yml
+- name: Create a new virtual distributed switch
+  local_action:
+    module: vds
+    hostname: "{{ vcenter_host }}"
+    vs_port: "{{ vcenter_port }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    vds_name: "{{ item.name }}"
+    numUplinks: "{{ item.uplinks }}"
+    numPorts: "{{ item.ports }}"
+    networkIOControl: "{{ item.nioc }}"
+    productVersion: "{{ item.productVersion }}"
+    state: "present"
+  with_items: vcenter_vdss

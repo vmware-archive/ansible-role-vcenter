@@ -14,20 +14,7 @@
 #  limitations under the License.
 #
 ---
-- name: Create ESX clusters
-  ignore_errors: no
-  vcenter_cluster:
-{% if vcenter_type == 'oob' %}
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
-    password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
-    datacenter_name: "{{ oob_vcenter_datacenter_name }}"
-{% endif %}
-{% if vcenter_type == 'ib' %}
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
-    password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
-    datacenter_name: "{{ ib_vcenter_datacenter_name }}"
-{% endif %}
+- name: Install pyvmomi
+  pip: name="pyvmomi" state=present version="{{ pyvmomi_version }}"
+  tags:
+    - prereqs
