@@ -1,6 +1,6 @@
 # ansible-role-vcenter
 
-[Ansible](https://github.com/ansible/ansible) rol for installing,
+[Ansible](https://github.com/ansible/ansible) role for installing,
 configuring and manipulating VMware vCenter Server objects.
 
 ## Requirements
@@ -8,7 +8,7 @@ configuring and manipulating VMware vCenter Server objects.
 This role currently supports Debian/Ubuntu distros.
 
 Further, this role utilizes code that, at the creation of this role,
-wascurrently under development at, and shared with us for our use, by,
+was currently under development at, and shared with us for our use, by,
 the Ansible development team. The code base can be found at:
 [github](https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py)
 
@@ -18,7 +18,7 @@ Documentation here is under way . . . in flux for a bit.
 
 ## Example playbook
 
-```
+```yaml
 ---
 - name: create a VMware distributed switch
   hosts: local
