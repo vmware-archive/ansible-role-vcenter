@@ -1,7 +1,7 @@
 # ansible-role-vcenter
 
 [Ansible](https://github.com/ansible/ansible) rol for installing,
-configuraing and manipulating VMware vCenter Server objects.
+configuring and manipulating VMware vCenter Server objects.
 
 ## Requirements
 
