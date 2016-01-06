@@ -1,0 +1,91 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+- name: Add NFS datastore to OOB ESX hosts
+  vcenter_add_nfs_ds:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.name }}"
+    nfs_host: "{{ oob_esx_server_nfs_host_name }}"
+    nfs_path: "{{ oob_esx_server_nfs_path }}"
+    nfs_name: "{{ oob_esx_server_nfs_ds_name }}"
+    nfs_access: "{{ oob_esx_server_nfs_access }}"
+    nfs_type: "{{ oob_esx_server_nfs_type }}"
+    state: 'present'
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - add_nfs_ds_to_oob_esx
+
+- name: Add NFS datastore to IB ESX hosts
+  vcenter_add_nfs_ds:
+    host: "{{ ib_vcenter_url }}"
+    login: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    port: "{{ ib_vcenter_port }}"
+    esxi_hostname: "{{ item.1.name }}"
+    nfs_host: "{{ ib_esx_server_nfs_host_name }}"
+    nfs_path: "{{ ib_esx_server_nfs_path }}"
+    nfs_name: "{{ ib_esx_server_nfs_ds_name }}"
+    nfs_access: "{{ ib_esx_server_nfs_access }}"
+    nfs_type: "{{ ib_esx_server_nfs_type }}"
+    state: 'present'
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - add_nfs_ds_to_ib_esx
+
+- name: Remove NFS datastore from OOB ESX hosts
+  vcenter_add_nfs_ds:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.name }}"
+    nfs_host: "{{ oob_esx_server_nfs_host_name }}"
+    nfs_path: "{{ oob_esx_server_nfs_path }}"
+    nfs_name: "{{ oob_esx_server_nfs_ds_name }}"
+    nfs_access: "{{ oob_esx_server_nfs_access }}"
+    nfs_type: "{{ oob_esx_server_nfs_type }}"
+    state: 'absent'
+  with_subelements:
+    - oob_vcenter.clusters
+    - hosts
+  tags:
+    - remove_nfs_ds_from_oob_esx
+
+- name: Remove NFS datastore from IB ESX hosts
+  vcenter_add_nfs_ds:
+    host: "{{ oob_vcenter_url }}"
+    login: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    port: "{{ oob_vcenter_port }}"
+    esxi_hostname: "{{ item.1.name }}"
+    nfs_host: "{{ ib_esx_server_nfs_host_name }}"
+    nfs_path: "{{ ib_esx_server_nfs_path }}"
+    nfs_name: "{{ ib_esx_server_nfs_ds_name }}"
+    nfs_access: "{{ ib_esx_server_nfs_access }}"
+    nfs_type: "{{ ib_esx_server_nfs_type }}"
+    state: 'present'
+  with_subelements:
+    - ib_vcenter.clusters
+    - hosts
+  tags:
+    - remove_nfs_ds_from_ib_esx

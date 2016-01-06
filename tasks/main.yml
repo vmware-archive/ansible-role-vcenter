@@ -18,3 +18,4 @@
 - include: esxclusters.yml
 - include: networking.yml
 - include: esxhosts.yml
+- include: storage.yml

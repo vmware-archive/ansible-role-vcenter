@@ -157,7 +157,7 @@
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     vds_name: "{{ oob_vcenter_net_vds_name }}"
     management_portgroup: "{{ oob_vcenter_net_mgmt_pg_name }}"
     vmnic: 'vmnic0'
@@ -175,7 +175,7 @@
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter_datacenter_name }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     vds_name: "{{ ib_vcenter_net_vds_name }}"
     management_portgroup: "{{ ib_vcenter_net_mgmt_pg_name }}"
     vmnic: 'vmnic0'
@@ -186,16 +186,16 @@
   tags:
     - add_ib_esx_hosts_to_vds
 
-- name: Migrate OOB Management ESX Servers IP Storage VMkernel Port to VDS
+- name: Create OOB Management ESX Servers IP Storage VMkernel Port
   vcenter_addvmk:
     host: "{{ oob_vcenter_url }}"
     login: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_storage_pg_name }}"
     vmk_information:
-      static: False
+      static: True
       vmk_ip: "{{ item.1.storage_ip }}"
       vmk_subnet: "{{ item.1.storage_netmask }}"
       vmk_service_type:
@@ -204,18 +204,18 @@
     - oob_vcenter.clusters
     - hosts
   tags:
-    - migrate_oob_vmks_to_vds
+    - create_oob_vmkernel_ports
 
-- name: Migrate OOB Management ESX Servers vMotion VMkernel Port to VDS
+- name: Create OOB Management ESX Servers vMotion VMkernel Port
   vcenter_addvmk:
     host: "{{ oob_vcenter_url }}"
     login: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_vmotion_pg_name }}"
     vmk_information:
-      static: False
+      static: True
       vmk_ip: "{{ item.1.vmotion_ip }}"
       vmk_subnet: "{{ item.1.vmotion_netmask }}"
       vmk_service_type: "{{ item.1.vmotion_service_type }}"
@@ -224,18 +224,18 @@
     - oob_vcenter.clusters
     - hosts
   tags:
-    - migrate_oob_vmks_to_vds
+    - create_oob_vmkernel_ports
 
-- name: Migrate IB Management ESX Servers IP Storage VMkernel Port to VDS
+- name: Create IB Management ESX Servers IP Storage VMkernel Port
   vcenter_addvmk:
     host: "{{ ib_vcenter_url }}"
     login: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_storage_pg_name }}"
     vmk_information:
-      static: False
+      static: True
       vmk_ip: "{{ item.1.storage_ip }}"
       vmk_subnet: "{{ item.1.storage_netmask }}"
       vmk_service_type:
@@ -244,18 +244,18 @@
     - ib_vcenter.clusters
     - hosts
   tags:
-    - migrate_ib_vmks_to_vds
+    - create_ib_vmkernel_ports
 
-- name: Migrate IB Management ESX Servers vMotion VMkernel Port to VDS
+- name: Create IB Management ESX Servers vMotion VMkernel Port
   vcenter_addvmk:
     host: "{{ ib_vcenter_url }}"
     login: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
-    esxi_hostname: "{{ item.1.mgmt_ip }}"
+    esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_vmotion_pg_name }}"
     vmk_information:
-      static: False
+      static: True
       vmk_ip: "{{ item.1.vmotion_ip }}"
       vmk_subnet: "{{ item.1.vmotion_netmask }}"
       vmk_service_type: "{{ item.1.vmotion_service_type }}"
@@ -264,4 +264,4 @@
     - ib_vcenter.clusters
     - hosts
   tags:
-    - migrate_ib_vmks_to_vds
+    - create_ib_vmkernel_ports
