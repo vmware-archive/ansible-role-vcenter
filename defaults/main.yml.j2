@@ -38,7 +38,7 @@ oob_vcenter:
         # Storage
           storage_ip: "{{ host.storage_ip }}"
           storage_netmask: "{{ host.storage_netmask }}"
-          storage_service_type: ""
+          storage_service_type:
 {% endif %}
 {% endfor %}
   dvs:
@@ -100,7 +100,7 @@ ib_vcenter:
           # Storage
             storage_ip: "{{ host.storage_ip }}"
             storage_netmask: "{{ host.storage_netmask }}"
-            storage_service_type: ""
+            storage_service_type:
 {% endif %}
 {% endfor %}
 {% if deploy_nsx == '1' %}
@@ -124,7 +124,7 @@ ib_vcenter:
           # Storage
             storage_ip: "{{ host.storage_ip }}"
             storage_netmask: "{{ host.storage_netmask }}"
-            storage_service_type: ""
+            storage_service_type:
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -148,7 +148,7 @@ ib_vcenter:
           # Storage
             storage_ip: "{{ host.storage_ip }}"
             storage_netmask: "{{ host.storage_netmask }}"
-            storage_service_type: ""
+            storage_service_type:
 {% endif %}
 {% endfor %}
   dvs:
