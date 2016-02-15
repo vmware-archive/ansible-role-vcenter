@@ -194,12 +194,12 @@
     port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_storage_pg_name }}"
-    vmk_information:
-      static: True
-      vmk_ip: "{{ item.1.storage_ip }}"
-      vmk_subnet: "{{ item.1.storage_netmask }}"
-      vmk_service_type:
-      vmk_mtu: 1500
+    dhcp: False
+    ip_address: "{{ item.1.storage_ip }}"
+    subnet_mask: "{{ item.1.storage_netmask }}"
+    service_type:
+    mtu: 1500
+    state: 'present'
   with_subelements:
     - oob_vcenter.clusters
     - hosts
@@ -214,12 +214,12 @@
     port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_vmotion_pg_name }}"
-    vmk_information:
-      static: True
-      vmk_ip: "{{ item.1.vmotion_ip }}"
-      vmk_subnet: "{{ item.1.vmotion_netmask }}"
-      vmk_service_type: "{{ item.1.vmotion_service_type }}"
-      vmk_mtu: 1500
+    dhcp: False
+    ip_address: "{{ item.1.vmotion_ip }}"
+    subnet_mask: "{{ item.1.vmotion_netmask }}"
+    service_type: "{{ item.1.vmotion_service_type }}"
+    mtu: 1500
+    state: 'present'
   with_subelements:
     - oob_vcenter.clusters
     - hosts
@@ -234,12 +234,12 @@
     port: "{{ ib_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_storage_pg_name }}"
-    vmk_information:
-      static: True
-      vmk_ip: "{{ item.1.storage_ip }}"
-      vmk_subnet: "{{ item.1.storage_netmask }}"
-      vmk_service_type:
-      vmk_mtu: 1500
+    dhcp: False
+    ip_address: "{{ item.1.storage_ip }}"
+    subnet_mask: "{{ item.1.storage_netmask }}"
+    service_type:
+    mtu: 1500
+    state: 'present'
   with_subelements:
     - ib_vcenter.clusters
     - hosts
@@ -254,12 +254,13 @@
     port: "{{ ib_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_vmotion_pg_name }}"
-    vmk_information:
-      static: True
-      vmk_ip: "{{ item.1.vmotion_ip }}"
-      vmk_subnet: "{{ item.1.vmotion_netmask }}"
-      vmk_service_type: "{{ item.1.vmotion_service_type }}"
-      vmk_mtu: 1500
+    dhcp: False
+    ip_address: "{{ item.1.vmotion_ip }}"
+    subnet_mask: "{{ item.1.vmotion_netmask }}"
+    service_type: "{{ item.1.vmotion_service_type }}"
+    mtu: 1500
+    service_type:
+    state: 'present'
   with_subelements:
     - ib_vcenter.clusters
     - hosts
