@@ -1,2 +1,117 @@
 ---
-# defaults file for vcenter
+global_state: "{{ desired_state }}"
+vcenter: "{{ ib_vcenter_url }}"
+vcenter_user: "{{ ib_vcenter_user_name }}"
+vcenter_password: "{{ ib_vcenter_user_password }}"
+vcenter_validate_certs: False
+
+datacenter:
+  name: "{{ ib_vcenter_datacenter_name }}"
+  clusters:
+  - name: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
+    ha:
+      enabled: True
+      admissionControlEnabled: True
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 2
+      num_disks_per_group: 4
+  - name: "{{ ib_vcenter_edge_esx_cluster_name }}"
+    ha:
+      enabled: True
+      admissionControlEnabled: True
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 2
+      num_disks_per_group: 4
+  - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
+    ha:
+      enabled: True
+      admissionControlEnabled: True
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 2
+      num_disks_per_group: 4
+
+management_vds_configuration:
+  name: "{{ ib_vcenter_mgmt_vds_name }}"
+  num_uplinks: "{{ mgmt_vds_num_uplinks }}"
+  num_ports: "{{ mgmt_vds_num_ports }}"
+  mtu: "{{ mgmt_vds_mtu }}"
+  discovery_proto: "{{ mgmt_vds_discovery_protocol }}"
+  discovery_ops: "{{ mgmt_vds_discovery_ops }}"
+  prod_version: "{{ mgmt_vds_prod_version }}"
+  vds_port_groups:
+    - name: "{{ mgmt_vds_viomgmt }}"
+      binding: "{{ mgmt_vds_viomgmt_binding }}"
+      allocation: "{{ mgmt_vds_viomgmt_allocation }}"
+      numports: "{{ mgmt_vds_viomgmt_numports }}"
+      vlan: "{{ mgmt_vds_viomgmt_vlan }}"
+    - name: "{{ vmotion_pg_name }}"
+      binding: "{{ vmotion_binding }}"
+      allocation: "{{ vmotion_allocation }}"
+      numports: "{{ vmotion_pg_numports }}"
+      vlan: "{{ vmotion_pg_vlan }}"
+    - name: "{{ api_pg_name }}"
+      binding: "{{ api_binding }}"
+      allocation: "{{ api_allocation }}"
+      numports: "{{ api_pg_numports }}"
+      vlan: "{{ api_pg_vlan }}"
+
+compute_vds_configuration:
+  name: "{{ ib_vcenter_compute_vds_name }}"
+  num_uplinks: "{{ compute_vds_num_uplinks }}"
+  num_ports: "{{ compute_vds_num_ports }}"
+  mtu: "{{ compute_vds_mtu }}"
+  discovery_proto: "{{ compute_vds_discovery_protocol }}"
+  discovery_ops: "{{ compute_vds_discovery_ops }}"
+  prod_version: "{{ compute_vds_prod_version }}"
+  vds_port_groups:
+    - name: "{{ mgmt_vds_viomgmt }}"
+      binding: "{{ mgmt_vds_viomgmt_binding }}"
+      allocation: "{{ mgmt_vds_viomgmt_allocation }}"
+      numports: "{{ mgmt_vds_viomgmt_numports }}"
+      vlan: "{{ mgmt_vds_viomgmt_vlan }}"
+    - name: "{{ vmotion_pg_name }}"
+      binding: "{{ vmotion_binding }}"
+      allocation: "{{ vmotion_allocation }}"
+      numports: "{{ vmotion_pg_numports }}"
+      vlan: "{{ vmotion_pg_vlan }}"
+    - name: "{{ api_pg_name }}"
+      binding: "{{ api_binding }}"
+      allocation: "{{ api_allocation }}"
+      numports: "{{ api_pg_numports }}"
+      vlan: "{{ api_pg_vlan }}"
