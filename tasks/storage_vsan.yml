@@ -1,0 +1,36 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+- name: VSAN Disk Check
+  vcenter_vsan_diskcheck:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter_name: "{{ datacenter.name }}"
+    cluster_name: "{{ item.name }}"
+    num_ssd: "{{ item.vsan.num_disk_groups }}"
+    num_hdd: "{{ item.vsan.num_disks_per_group }}"
+    state: 'present'
+  with_items:
+  
+- name: disk check debug
+  debug: msg="HOST--> {{ item.item.name }} PASS Disk Check --> {{ item.result }}"
+  failed_when: not item.result
+  with_items:
+    - "{{ disk_check.results }}"
+  tags:
+    - vsan_disk_check

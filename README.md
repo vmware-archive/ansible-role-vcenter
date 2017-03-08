@@ -1,38 +1,41 @@
+[![Build Status](https://travis-ci.org/jdatx/ansible-role-vcenter.svg?branch=master)](https://travis-ci.org/jdatx/ansible-role-vcenter)
+
 # ansible-role-vcenter
 
 [Ansible](https://github.com/ansible/ansible) role for installing,
-configuring and manipulating VMware vCenter Server objects.
+configuring and manipulating VMware vCenter Server objects. Specifically designed to
+select a prescribed vcenter environment (Production, Medium, Small), select a storage
+(NFS, VSAN). Based on the enviromnet selections pre defined number of hosts and clusters
+are instantiated with a single vds and perscribed portgroups.
 
 ## Requirements
 
-This role currently supports Debian/Ubuntu distros.
+Debian/Ubuntu distros
+pyvmomi
 
 Further, this role utilizes code that, at the creation of this role,
 was currently under development at, and shared with us for our use, by,
 the Ansible development team. The code base can be found at:
 [github](https://raw.githubusercontent.com/ansible/ansible/devel/lib/ansible/module_utils/vmware.py)
 
+This role also utilizes some cusotme modules found [here](https://github.com/vmware/ansible-modules-extras-gpl3).
+
 ## Role Variables
 
-Documentation here is under way . . . in flux for a bit.
+- vcenter_env: ['Production', 'Medium', 'Small']
+- vcenter_storage: ['NFS', 'VSAN']
 
 ## Example playbook
 
 ```yaml
 ---
-- name: create a VMware distributed switch
+- name: vCenter Environent  
   hosts: local
   roles:
     - vcenter
   vars_files:
-    - /vars/uianswers.yml
+    - /vars/answers.yml
 
-- name: setup portgroup in a VDS
-  hosts: local
-  roles:
-    - vcenter
-  vars_files:
-    - /vars/uianswers.yml
 ```
 
 # License and Copyright

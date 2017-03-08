@@ -1,0 +1,313 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+global_state: "{{ desired_state }}"
+vcenter: "{{ ib_vcenter_url }}"
+vcenter_user: "{{ ib_vcenter_user_name }}"
+vcenter_password: "{{ ib_vcenter_user_password }}"
+vcenter_validate_certs: False
+vcenter_ntp: "{{ ntp_server }}"
+
+{% set vcenter_env = env %}
+{% set vcenter_storage = storage %}
+
+{% if vcenter_storage == 'VSAN' %}
+{% set vmkservicetype = "vsan" %}
+{% else %}
+{% set vmkservicetype = "" %}
+{% endif %}
+
+{% if vcenter_env == 'Production' %}
+{% set mgmt_num_hosts = 4 %}
+{% set compute_num_hosts = 4 %}
+{% set edge_num_hosts = 4 %}
+{% elif vcenter_env == 'Medium' %}
+{% set mgmt_num_hosts = 4 %}
+{% set compute_num_hosts = 4 %}
+{% set edge_num_hosts = 0 %}
+{% else %}
+{% set mgmt_num_hosts = 1 %}
+{% set compute_num_hosts = 0 %}
+{% set edge_num_hosts = 0 %}
+{% endif %}
+
+datacenter:
+  name: "{{ ib_vcenter_datacenter_name }}"
+  clusters:
+  - name: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
+    ha:
+{% if (vcenter_storage == 'VSAN') %}
+      enabled: False
+      admissionControlEnabled: False
+{% else %}
+      enabled: True
+      admissionControlEnabled: True
+{% endif %}
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+{% if vcenter_storage == 'VSAN' %}
+      enabled: True
+      autoClaimStorage: False
+      num_disk_groups: {{ mgmt_vsan_num_disk_groups|int }}
+      num_disks_per_group: {{ mgmt_vsan_num_disks_group|int }}
+{% else %}
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 0
+      num_disks_per_group: 0
+{% endif %}
+{% if env == 'Production' or env == 'Medium' %}
+  - name: "{{ ib_vcenter_compute_esx_cluster_name }}"
+    ha:
+{% if (vcenter_storage == 'VSAN') %}
+      enabled: False
+      admissionControlEnabled: False
+{% else %}
+      enabled: True
+      admissionControlEnabled: True
+{% endif %}
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+{% if (vcenter_storage == 'VSAN') %}
+      enabled: True
+      autoClaimStorage: False
+      num_disk_groups: 0
+      num_disks_per_group: 0
+{% else %}
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 0
+      num_disks_per_group: 0
+{% endif %}
+{% endif %}
+{% if env == 'Production' %}
+  - name: "{{ ib_vcenter_edge_esx_cluster_name }}"
+    ha:
+{% if (vcenter_storage == 'VSAN') %}
+      enabled: False
+      admissionControlEnabled: False
+{% else %}
+      enabled: True
+      admissionControlEnabled: True
+{% endif %}
+      failoverLevel: 1
+      hostMonitoring: 'enabled'
+      vmMonitoring: 'vmAndAppMonitoring'
+      vmMonitoring_sensitivity: 1
+      restartPriority: 'high'
+    drs:
+      enabled: True
+      enableVmBehaviorOverrides: True
+      defaultVmBehavior: 'fullyAutomated'
+      vmotionRate: 3
+    vsan:
+{% if (vcenter_storage == 'VSAN') %}
+      enabled: True
+      autoClaimStorage: False
+      num_disk_groups: 0
+      num_disks_per_group: 0
+{% else %}
+      enabled: False
+      autoClaimStorage: False
+      num_disk_groups: 0
+      num_disks_per_group: 0
+{% endif %}
+{% endif %}
+  virtual_distributed_switch:
+    - name: "{{ ib_vcenter_mgmt_vds_name }}"
+      num_uplinks: "{{ mgmt_vds_num_uplinks }}"
+      num_ports: "{{ mgmt_vds_num_ports }}"
+      mtu: "{{ mgmt_vds_mtu }}"
+      discovery_proto: "{{ mgmt_vds_discovery_protocol }}"
+      discovery_ops: "{{ mgmt_vds_discovery_ops }}"
+      port_groups:
+      - name: "{{ vmotion_pg_name }}"
+        binding: "{{ vmotion_binding }}"
+        numports: "{{ vmotion_pg_numports }}"
+        vlan: "{{ vmotion_pg_vlan }}"
+      - name: "{{ storage_pg_name }}"
+        binding: "{{ storage_binding }}"
+        numports: "{{ storage_pg_numports }}"
+        vlan: "{{ storage_pg_vlan }}"
+{% if deploy_vio == '1' %}
+      - name: "{{ mgmt_vds_viomgmt }}"
+        binding: "{{ mgmt_vds_viomgmt_binding }}"
+        numports: "{{ mgmt_vds_viomgmt_numports }}"
+        vlan: "{{ mgmt_vds_viomgmt_vlan }}"
+      - name: "{{ api_pg_name }}"
+        binding: "{{ api_binding }}"
+        numports: "{{ api_pg_numports }}"
+        vlan: "{{ api_pg_vlan }}"
+{% if env == 'Production' %}
+      - name: "{{ ext_pg_name }}"
+        binding: "{{ ext_binding }}"
+        numports: "{{ ext_pg_numports }}"
+        vlan: "{{ ext_pg_vlan }}"
+{% endif %}
+{% endif %}
+  esxi_hosts:
+{% for h in range(mgmt_num_hosts|int) %}
+    - cluster: "{{ ib_vcenter_mgmt_esx_cluster_name }}"
+      name: {% raw %}"{{ mgmt_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+{% for h in range(compute_num_hosts|int) %}
+    - cluster: "{{ ib_vcenter_compute_esx_cluster_name }}"
+      name: {% raw %}"{{ compute_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+{% for h in range(edge_num_hosts|int) %}
+    - cluster: "{{ ib_vcenter_edge_esx_cluster_name }}"
+      name: {% raw %}"{{ edge_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+  vmkernel_adapters:
+{% for h in range(mgmt_num_hosts|int) %}
+    - name: {% raw %}"{{ mgmt_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ vmotion_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ mgmt_esx_host_vmo_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ vmotion_subnet }}"
+      servicetype: 'vmotion'
+      mtu: "{{ vmotion_vmk_mtu }}"
+    - name: {% raw %}"{{ mgmt_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ storage_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ mgmt_esx_host_storage_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ storage_subnet }}"
+      servicetype: "{{ vmkservicetype }}"
+      mtu: "{{ storage_mtu }}"
+{% endfor %}
+{% for h in range(edge_num_hosts|int) %}
+    - name: {% raw %}"{{ edge_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ vmotion_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ edge_esx_host_vmo_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ vmotion_subnet }}"
+      servicetype: 'vmotion'
+      mtu: "{{ vmotion_vmk_mtu }}"
+    - name: {% raw %}"{{ edge_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ storage_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ edge_esx_host_storage_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ storage_subnet }}"
+      servicetype: "{{ vmkservicetype }}"
+      mtu: "{{ storage_mtu }}"
+{% endfor %}
+{% for h in range(compute_num_hosts|int) %}
+    - name: {% raw %}"{{ compute_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ vmotion_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ compute_esx_host_vmo_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ vmotion_subnet }}"
+      servicetype: 'vmotion'
+      mtu: "{{ vmotion_vmk_mtu }}"
+    - name: {% raw %}"{{ compute_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      pg_name: "{{ storage_pg_name }}"
+      dhcp: False
+      ipaddr: {% raw %}"{{ compute_esx_host_storage_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      subnet: "{{ storage_subnet }}"
+      servicetype: "{{ vmkservicetype }}"
+      mtu: "{{ storage_mtu }}"
+{% endfor %}
+### 
+{% if vcenter_storage == 'NFS' and vcenter_storage != 'VSAN' %}
+{% if env == 'Production' %}
+{% set num_mgmt_nfs_ds = 4 %}
+{% set num_compute_nfs_ds = 2 %}
+{% set num_edge_nfs_ds = 2 %}
+{% elif env == 'Medium' %}
+{% set num_mgmt_nfs_ds = 4 %}
+{% set num_compute_nfs_ds = 2 %}
+{% set num_edge_nfs_ds = 0 %}
+{% elif env == 'Small' %}
+{% set num_mgmt_nfs_ds = 4 %}
+{% set num_compute_nfs_ds = 0 %}
+{% set num_edge_nfs_ds = 0 %}
+{% endif %}
+  nfs_storage:
+    nfshost: "{{ nfs_host }}"
+    mgmt_ds:
+{% for n in range(num_mgmt_nfs_ds|int) %}
+    - ds_name: {% raw %}"{{ mgmt_nfs_ds_name_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      ds_path: {% raw %}"{{ mgmt_nfs_path_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      esxi_hosts:
+{% for h in range(mgmt_num_hosts|int) %}
+        - name: {% raw %}"{{ mgmt_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+{% endfor %}
+{% if vcenter_env == 'Production' or vcenter_env == 'Medium' %}
+    compute_ds:
+{% for n in range(num_compute_nfs_ds|int) %}
+    - ds_name: {% raw %}"{{ compute_nfs_ds_name_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      ds_path: {% raw %}"{{ compute_nfs_path_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      esxi_hosts:
+{% for h in range(compute_num_hosts|int) %}
+        - name: {% raw %}"{{ compute_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+{% endfor %}
+{% if vcenter_env == 'Production' %}
+    edge_ds:
+{% for n in range(num_edge_nfs_ds|int) %}
+    - ds_name: {% raw %}"{{ edge_nfs_ds_name_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      ds_path: {% raw %}"{{ edge_nfs_path_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+      esxi_hosts:
+{% for h in range(edge_num_hosts|int) %}
+        - name: {% raw %}"{{ edge_esx_host_{% endraw %}{{ loop.index }} {% raw %}}}"
+{% endraw %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endif %}

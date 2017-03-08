@@ -1,0 +1,39 @@
+---
+language: python
+python: "2.7"
+
+# Use the new container infrastructure
+sudo: required
+
+# Install ansible
+addons:
+  apt:
+    packages:
+    - python-pip
+
+before_install:
+  - export DEFAULTS_DIR=/opt/chaperone-ansible/roles/vcenter/defaults
+  - export VCENTER_ENVS=(Production Medium Small)
+  - export ANSIBLE_LIBRARY=$(pwd)
+  - export GIT_USER=$(echo $TRAVIS_REPO_SLUG | awk '{split($0,a,"/"); print a[1]}')
+  - "sudo apt-get -y install git || true"
+  - "[ -d $DEFAULTS_DIR ] || sudo mkdir -p $DEFAULTS_DIR"
+
+install:
+  # Install ansible
+  - pip install ansible
+  # Check ansible version
+  - ansible --version
+  # Create ansible.cfg with correct roles_path
+  - printf '[defaults]\nroles_path=../' >ansible.cfg
+
+script:
+  # Pull vmware modules
+  - git clone https://github.com/$GIT_USER/ansible-modules-extras-gpl3.git
+  # Basic role syntax check
+  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  # Role setup play
+  - for i in ${VCENTER_ENVS[@]}; do ansible-playbook -v tests/test.yml -i tests/inventory --extra-vars "env=$i storage=NFS" --connection=local --sudo --tags install_prereqs,create_data; done
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

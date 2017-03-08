@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars_files:
+    - vars/test_main.yml
+  roles:
+    - ansible-role-vcenter

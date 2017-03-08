@@ -1,0 +1,176 @@
+#
+#  Copyright 2015 VMware, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+---
+- name: Datacenter
+  vmware_datacenter:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter_name: "{{ item.name }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter }}"
+  tags:
+    - all
+    - logical_build
+    - datacenter
+
+- name: Clusters
+  vcenter_cluster:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter_name: "{{ datacenter.name }}"
+    cluster_name: "{{ item.name }}"
+    ha: "{{ item.ha }}"
+    drs: "{{ item.drs }}"
+    vsan: "{{ item.vsan }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter.clusters }}"
+  tags:
+    - all
+    - logical_build
+    - clusters
+
+- name: Virtual Distributed Switch
+  vmware_dvswitch:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter_name: "{{ datacenter.name }}"
+    switch_name: "{{ item.name }}"
+    uplink_quantity: "{{ item.num_uplinks }}"
+    mtu: "{{ item.mtu }}"    
+    discovery_proto: "{{ item.discovery_proto }}"
+    discovery_operation: "{{ item.discovery_ops }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter.virtual_distributed_switch }}"
+  tags:
+    - all
+    - logical_build
+    - vds
+
+- name: Portgroups
+  vmware_dvs_portgroup:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    switch_name: "{{ item.0.name }}"
+    portgroup_name: "{{ item.1.name }}"
+    portgroup_type: "{{ item.1.binding }}"
+    num_ports: "{{ item.1.numports }}"
+    vlan_id: "{{ item.1.vlan }}"
+    state: "{{ global_state }}"
+  with_subelements:
+    - "{{ datacenter.virtual_distributed_switch }}"
+    - "port_groups"  
+  tags:
+    - all
+    - logical_build
+    - pgs
+
+- name: ESXI hosts
+  vmware_host:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    datacenter_name: "{{ datacenter.name }}"
+    cluster_name: "{{ item.cluster }}"
+    esxi_hostname: "{{ item.name }}"
+    esxi_username: "{{ esxi_username }}"
+    esxi_password: "{{ esxi_password }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter.esxi_hosts }}"
+  tags:
+    - all
+    - hosts
+
+- name: Host vmnics
+  vcenter_host_vmnic:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    esxi_hostname: "{{ item.name }}"
+    obtain: 'available'
+  register: host_vmnics
+  with_items:
+    - "{{ datacenter.esxi_hosts }}"
+  tags:
+    - all
+    - host_vds
+
+- name: Configure Hosts Virtual Distributed Switch
+  vmware_dvs_host:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    esxi_hostname: "{{ item.host_vmnics.host }}"
+    switch_name: "{{ datacenter.virtual_distributed_switch[0].name }}"
+    vmnics: "{{ item.host_vmnics.vmnics }}"
+    state: "{{ global_state }}"
+  register: host_vds_vmware
+  when: item.host_vmnics.vmnics
+  with_items:
+    - "{{ host_vmnics.results }}"
+  tags:
+    - all
+    - host_vds
+
+- name: Hosts VmKernel Adapters
+  vcenter_vmk:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    esxi_hostname: "{{ item.name }}"
+    portgroup_name: "{{ item.pg_name }}"
+    dhcp: "{{ item.dhcp }}"
+    ip_address: "{{ item.ipaddr }}"
+    subnet_mask: "{{ item.subnet }}"
+    service_type: "{{ item.servicetype }}"
+    mtu: "{{ item.mtu }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter.vmkernel_adapters }}"
+  tags:
+    - all
+    - vmks
+
+- name: Host NTP
+  vcenter_host_ntp:
+    hostname: "{{ vcenter }}"
+    username: "{{ vcenter_user }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: "{{ vcenter_validate_certs }}"
+    cluster_name: "{{ item.name }}"
+    ntp_server: "{{ vcenter_ntp }}"
+    state: "{{ global_state }}"
+  with_items:
+    - "{{ datacenter.clusters }}"
+  tags:
+    - all
+    - host_ntp
+

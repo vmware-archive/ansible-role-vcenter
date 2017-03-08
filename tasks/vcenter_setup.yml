@@ -14,16 +14,24 @@
 #  limitations under the License.
 #
 ---
-- name: Setup
-  include: vcenter_setup.yml
+- name: Install pre-requisites
+  pip: name={{ item }}
+  with_items:
+    - pyvmomi
+  tags: install_prereqs
 
-- name: vCenter Common
-  include: vcenter_common.yml
+- name: Set Templates Directory
+  set_fact:
+    defaults_dir: "/opt/chaperone-ansible/roles/vcenter/defaults"
+  tags: create_data
 
-#- name: Storage VSAN
-#  include: storage_vsan.yml
-#  when: storage == 'VSAN'
+- name: Create vCenter Data for specified Envrionment
+  template:
+    src: "../templates/main.yml.j2"
+    dest: "{{ defaults_dir }}/main.yml"
+  register: create_vars
+  tags: create_data
 
-- name: Storage NFS
-  include: storage_nfs.yml
-  when: storage == 'NFS'
+- name: Delete template
+  file: path="{{ defaults_dir }}/main.yml" state=absent
+  tags: delete_template
