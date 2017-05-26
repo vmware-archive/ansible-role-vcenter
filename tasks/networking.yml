@@ -17,15 +17,16 @@
 - name: Create the OOB vCenter Distributed vSwitch
   vds:
     hostname: "{{ oob_vcenter_url }}"
-    vs_port: "{{ oob_vcenter_port }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     vds_name: "{{ item['name'] }}"
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
-    networkIOControl: "{{ item['nioc'] }}"
     productVersion: "{{ item['productVersion'] }}"
+    mtu: 1600
+    discovery_protocol: 'lldp'
+    discovery_operation: 'both'
     state: "present"
   with_items: "{{ oob_vcenter['dvs'] }}"
   tags:
@@ -34,15 +35,16 @@
 - name: Create the IB vCenter Distributed vSwitch
   vds:
     hostname: "{{ ib_vcenter_url }}"
-    vs_port: "{{ ib_vcenter_port }}"
     username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     vds_name: "{{ item['name'] }}"
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
-    networkIOControl: "{{ item['nioc'] }}"
     productVersion: "{{ item['productVersion'] }}"
+    mtu: 1600
+    discovery_protocol: 'lldp'
+    discovery_operation: 'both'
     state: "present"
   with_items: "{{ ib_vcenter['dvs'] }}"
   tags:
@@ -51,14 +53,15 @@
 - name: Destroy the OOB vCenter Distributed vSwitch
   vds:
     hostname: "{{ oob_vcenter_url }}"
-    vs_port: "{{ oob_vcenter_port }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     vds_name: "{{ item['name'] }}"
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
-    networkIOControl: "{{ item['nioc'] }}"
+    mtu: 1600
+    discovery_protocol: 'lldp'
+    discovery_operation: 'both'
     productVersion: "{{ item['productVersion'] }}"
     state: "absent"
   with_items: "{{ oob_vcenter['dvs'] }}"
@@ -68,15 +71,16 @@
 - name: Destroy the IB vCenter Distributed vSwitch
   vds:
     hostname: "{{ ib_vcenter_url }}"
-    vs_port: "{{ ib_vcenter_port }}"
     username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     vds_name: "{{ item['name'] }}"
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
-    networkIOControl: "{{ item['nioc'] }}"
     productVersion: "{{ item['productVersion'] }}"
+    mtu: 1600
+    discovery_protocol: 'lldp'
+    discovery_operation: 'both'
     state: "absent"
   with_items: "{{ ib_vcenter['dvs'] }}"
   tags:
@@ -85,7 +89,6 @@
 - name: Create the OOB vCenter portgroups
   vcenter_portgroup:
     hostname: "{{ oob_vcenter_url }}"
-    vs_port: "{{ oob_vcenter_port }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     vds_name: "{{ oob_vcenter['dvs'][0]['name'] }}"
@@ -102,7 +105,6 @@
 - name: Create the IB vCenter portgroups
   vcenter_portgroup:
     hostname: "{{ ib_vcenter_url }}"
-    vs_port: "{{ ib_vcenter_port }}"
     username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     vds_name: "{{ ib_vcenter['dvs'][0]['name'] }}"
@@ -119,7 +121,6 @@
 - name: Destroy the OOB vCenter portgroups
   vcenter_portgroup:
     hostname: "{{ oob_vcenter_url }}"
-    vs_port: "{{ oob_vcenter_port }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     vds_name: "{{ oob_vcenter['dvs'][0]['name'] }}"
@@ -136,7 +137,6 @@
 - name: Destroy the IB vCenter portgroups
   vcenter_portgroup:
     hostname: "{{ ib_vcenter_url }}"
-    vs_port: "{{ ib_vcenter_port }}"
     username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     vds_name: "{{ ib_vcenter['dvs'][0]['name'] }}"
@@ -152,7 +152,7 @@
 
 - name: Add ESX hosts to OOB vCenter DVS
   vcenter_config_host_vds_only:
-    host: "{{ oob_vcenter_url }}"
+    vcenter_hostname: "{{ oob_vcenter_url }}"
     login: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     port: "{{ oob_vcenter_port }}"
@@ -170,7 +170,7 @@
 
 - name: Add ESX hosts to IB vCenter VDS
   vcenter_config_host_vds_only:
-    host: "{{ ib_vcenter_url }}"
+    vcenter_hostname: "{{ ib_vcenter_url }}"
     login: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
     port: "{{ ib_vcenter_port }}"
@@ -188,10 +188,9 @@
 
 - name: Create OOB Management ESX Servers IP Storage VMkernel Port
   vcenter_addvmk:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_storage_pg_name }}"
     dhcp: False
@@ -208,10 +207,9 @@
 
 - name: Create OOB Management ESX Servers vMotion VMkernel Port
   vcenter_addvmk:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ oob_vcenter_net_vmotion_pg_name }}"
     dhcp: False
@@ -228,10 +226,9 @@
 
 - name: Create IB Management ESX Servers IP Storage VMkernel Port
   vcenter_addvmk:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_storage_pg_name }}"
     dhcp: False
@@ -248,10 +245,9 @@
 
 - name: Create IB Management ESX Servers vMotion VMkernel Port
   vcenter_addvmk:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
     portgroup_name: "{{ ib_vcenter_net_vmotion_pg_name }}"
     dhcp: False
@@ -259,7 +255,6 @@
     subnet_mask: "{{ item.1.vmotion_netmask }}"
     service_type: "{{ item.1.vmotion_service_type }}"
     mtu: 1500
-    service_type:
     state: 'present'
   with_subelements:
     - ib_vcenter.clusters

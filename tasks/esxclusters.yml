@@ -17,10 +17,9 @@
 - name: Create clusters in the IB vCenter
   ignore_errors: no
   vcenter_cluster:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: present
@@ -48,10 +47,9 @@
 - name: Create clusters in the OOB vCenter
   ignore_errors: no
   vcenter_cluster:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: present
@@ -79,10 +77,9 @@
 - name: Destroy clusters in the IB vCenter
   ignore_errors: no
   vcenter_cluster:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: absent
@@ -110,10 +107,9 @@
 - name: Destroy clusters in the OOB vCenter
   ignore_errors: no
   vcenter_cluster:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
     state: absent
