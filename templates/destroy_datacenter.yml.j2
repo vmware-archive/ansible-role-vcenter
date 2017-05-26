@@ -18,17 +18,15 @@
   ignore_errors: no
   vcenter_datacenter:
 {% if vcenter_type == 'oob' %}
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter_datacenter_name }}"
 {% endif %}
 {% if vcenter_type == 'ib' %}
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter_datacenter_name }}"
 {% endif %}
     state: absent
