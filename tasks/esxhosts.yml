@@ -28,7 +28,7 @@
     state: 'present'
   with_subelements:
     - oob_vcenter.clusters
-    - hosts
+    - "{{ hosts }}"
   tags:
     - add_esx_hosts_to_oob_esx_cluster
 
@@ -46,7 +46,7 @@
     state: 'present'
   with_subelements:
     - ib_vcenter.clusters
-    - hosts
+    - "{{ hosts }}"
   tags:
     - add_esx_hosts_to_ib_esx_cluster
 
@@ -64,7 +64,7 @@
     state: 'absent'
   with_subelements:
     - oob_vcenter.clusters
-    - hosts
+    - "{{ hosts }}"
   tags:
     - remove_esx_hosts_from_oob_esx_cluster
 
@@ -82,6 +82,6 @@
     state: 'absent'
   with_subelements:
     - ib_vcenter.clusters
-    - hosts
+    - "{{ hosts }}"
   tags:
     - remove_esx_hosts_from_ib_esx_cluster
