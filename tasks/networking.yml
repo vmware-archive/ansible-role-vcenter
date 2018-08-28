@@ -24,9 +24,9 @@
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
     productVersion: "{{ item['productVersion'] }}"
-    mtu: 1600
-    discovery_protocol: 'lldp'
-    discovery_operation: 'both'
+    mtu: "{{ mtu }}"
+    discovery_protocol: "{{ discovery_protocol }}"
+    discovery_operation: "{{ discovery_operation }}"
     state: "present"
   with_items: "{{ oob_vcenter['dvs'] }}"
   tags:
@@ -42,9 +42,9 @@
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
     productVersion: "{{ item['productVersion'] }}"
-    mtu: 1600
-    discovery_protocol: 'lldp'
-    discovery_operation: 'both'
+    mtu: "{{ mtu }}"
+    discovery_protocol: "{{ discovery_protocol }}"
+    discovery_operation: "{{ discovery_operation }}"
     state: "present"
   with_items: "{{ ib_vcenter['dvs'] }}"
   tags:
@@ -59,9 +59,9 @@
     vds_name: "{{ item['name'] }}"
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
-    mtu: 1600
-    discovery_protocol: 'lldp'
-    discovery_operation: 'both'
+    mtu: "{{ mtu }}"
+    discovery_protocol: "{{ discovery_protocol }}"
+    discovery_operation: "{{ discovery_operation }}"
     productVersion: "{{ item['productVersion'] }}"
     state: "absent"
   with_items: "{{ oob_vcenter['dvs'] }}"
@@ -78,9 +78,9 @@
     numUplinks: "{{ item['uplinks'] }}"
     numPorts: "{{ item['ports'] }}"
     productVersion: "{{ item['productVersion'] }}"
-    mtu: 1600
-    discovery_protocol: 'lldp'
-    discovery_operation: 'both'
+    mtu: "{{ mtu }}"
+    discovery_protocol: "{{ discovery_protocol }}"
+    discovery_operation: "{{ discovery_operation }}"
     state: "absent"
   with_items: "{{ ib_vcenter['dvs'] }}"
   tags:
@@ -197,7 +197,7 @@
     ip_address: "{{ item.1.storage_ip }}"
     subnet_mask: "{{ item.1.storage_netmask }}"
     service_type:
-    mtu: 1500
+    mtu: "{{ mtu }}"
     state: 'present'
   with_subelements:
     - oob_vcenter.clusters
@@ -216,7 +216,7 @@
     ip_address: "{{ item.1.vmotion_ip }}"
     subnet_mask: "{{ item.1.vmotion_netmask }}"
     service_type: "{{ item.1.vmotion_service_type }}"
-    mtu: 1500
+    mtu: "{{ mtu }}"
     state: 'present'
   with_subelements:
     - oob_vcenter.clusters
@@ -235,7 +235,7 @@
     ip_address: "{{ item.1.storage_ip }}"
     subnet_mask: "{{ item.1.storage_netmask }}"
     service_type:
-    mtu: 1500
+    mtu: "{{ mtu }}"
     state: 'present'
   with_subelements:
     - ib_vcenter.clusters
@@ -254,7 +254,7 @@
     ip_address: "{{ item.1.vmotion_ip }}"
     subnet_mask: "{{ item.1.vmotion_netmask }}"
     service_type: "{{ item.1.vmotion_service_type }}"
-    mtu: 1500
+    mtu: "{{ mtu }}"
     state: 'present'
   with_subelements:
     - ib_vcenter.clusters
