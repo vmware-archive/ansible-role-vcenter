@@ -15,3 +15,6 @@
 #
 ---
 vcenter_role_directory: "/opt/chaperone-ansible/roles/vcenter"
+mtu: "1600"
+discovery_protocol: "lldp"
+discovery_operation: "both"
